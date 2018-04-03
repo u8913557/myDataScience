@@ -28,6 +28,7 @@ if __name__ == '__main__':
     X_test = np.concatenate((ones, X), axis=1)
     Y_hat = perceptron_test.predict(X_test)
     print("R2:", perceptron_test.r2_evl(Y, Y_hat))
+    print("Score:", perceptron_test.score(Y, Y_hat))
 
 
 

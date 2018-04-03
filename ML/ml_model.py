@@ -53,6 +53,9 @@ class ml_model(object):
         #print("Shape of d2:", d2.shape)
         r2 = 1 - (d1.T.dot(d1) / d2.T.dot(d2))
         return r2
+
+    def score(self, Y, Y_hat):
+        return np.mean(Y_hat == Y)
     
 
 class perceptron(ml_model):
@@ -99,7 +102,7 @@ class perceptron(ml_model):
             error = Y - Y_hat
             
             if(np.count_nonzero(error, axis=0)==0):
-                print("Finish Training at {0}-th run".format(epoch))
+                print("Finish Training at {0}-th run".format(epoch+1))
                 break
             
             delta_w = self.eta * np.dot(X_train.T, error)
@@ -112,7 +115,7 @@ class perceptron(ml_model):
                 #print("w_:", self.w_)
                 #print("errors_:\n", self.errors_) 
         
-        print("final w:", self.w_)
+        print("final w_:\n", self.w_, "epochs:", (epoch+1), "/", self.num_epochs)
 
     def net_input(self, X_data):
         # net input: w0x0 + w1x1... + wixi
