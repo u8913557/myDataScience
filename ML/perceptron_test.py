@@ -26,7 +26,7 @@ if __name__ == '__main__':
     
     Y[Y == 0] = -1
     Y = Y.reshape(Y.shape[0], 1)
-    perceptron_test = ml_model.perceptron(num_epochs=200)
+    perceptron_test = ml_model.myPerceptron(num_epochs=200)
     perceptron_test.fit(X, Y)
 
     ones = np.ones((X.shape[0], 1))
@@ -34,6 +34,8 @@ if __name__ == '__main__':
     Y_hat = perceptron_test.predict(X_test)
     print("R2:", perceptron_test.r2_evl(Y, Y_hat))
     print("Score:", perceptron_test.score(Y, Y_hat))
+
+    del perceptron_test
 
     # OR Gate
     print("OR Gate:")
@@ -58,7 +60,7 @@ if __name__ == '__main__':
 
     Y[Y == 0] = -1
     Y = Y.reshape(Y.shape[0], 1)
-    perceptron_test = ml_model.perceptron(num_epochs=200)
+    perceptron_test = ml_model.myPerceptron(num_epochs=200)
     perceptron_test.fit(X, Y)
 
     ones = np.ones((X.shape[0], 1))
@@ -67,6 +69,7 @@ if __name__ == '__main__':
     print("R2:", perceptron_test.r2_evl(Y, Y_hat))
     print("Score:", perceptron_test.score(Y, Y_hat))
 
+    del perceptron_test
 
     # XOR Gate
     print("OR Gate:")
@@ -91,7 +94,7 @@ if __name__ == '__main__':
 
     Y[Y == 0] = -1
     Y = Y.reshape(Y.shape[0], 1)
-    perceptron_test = ml_model.perceptron(num_epochs=200)
+    perceptron_test = ml_model.myPerceptron(num_epochs=200)
     perceptron_test.fit(X, Y)
 
     ones = np.ones((X.shape[0], 1))

@@ -56,7 +56,7 @@ class ml_model(object):
         return np.mean(Y_hat == Y)
     
 
-class perceptron(ml_model):
+class myPerceptron(ml_model):
   
     def __init__(self, method=None, eta=0.01, num_epochs=100, shuffle=True, activation='step'):
         #print("perceptron: __init__")  
