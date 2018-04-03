@@ -72,10 +72,11 @@ class myPerceptron(ml_model):
     """
     def fit(self, X_train, Y):
         # print("perceptron: train")
-        #super().train()
+        # super().fit()
 
         # Dimensions, Features of X_Train
         N, D = X_train.shape
+        print("X_train has {0} features for {1} samples".format(D, N))
 
         if (self.shuffle==True):
             #init w_ as random numbers
