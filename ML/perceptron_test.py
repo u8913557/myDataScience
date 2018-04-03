@@ -36,9 +36,7 @@ if __name__ == '__main__':
     perceptron_test.fit(X, Y)
 
     # Prepare Data for teating
-    ones = np.ones((X.shape[0], 1))
-    X_test = np.concatenate((ones, X), axis=1)
-    Y_hat = perceptron_test.predict(X_test)
+    Y_hat = perceptron_test.predict(X, addBias=True)
     print("R2:", perceptron_test.r2_evl(Y, Y_hat))
     print("Score:", perceptron_test.score(Y, Y_hat))
 
@@ -74,9 +72,7 @@ if __name__ == '__main__':
     perceptron_test.fit(X, Y)
 
     # Prepare Data for testing
-    ones = np.ones((X.shape[0], 1))
-    X_test = np.concatenate((ones, X), axis=1)
-    Y_hat = perceptron_test.predict(X_test)
+    Y_hat = perceptron_test.predict(X, addBias=True)
     print("R2:", perceptron_test.r2_evl(Y, Y_hat))
     print("Score:", perceptron_test.score(Y, Y_hat))
 
@@ -108,9 +104,7 @@ if __name__ == '__main__':
     perceptron_test = ml_model.myPerceptron(num_epochs=200)
     perceptron_test.fit(X, Y)
 
-    ones = np.ones((X.shape[0], 1))
-    X_test = np.concatenate((ones, X), axis=1)
-    Y_hat = perceptron_test.predict(X_test)
+    Y_hat = perceptron_test.predict(X, addBias=True)
     print("R2:", perceptron_test.r2_evl(Y, Y_hat))
     print("Score:", perceptron_test.score(Y, Y_hat))
 
@@ -151,9 +145,7 @@ if __name__ == '__main__':
     perceptron_test = ml_model.myPerceptron(num_epochs=200)
     perceptron_test.fit(X_train, y_train)
    
-    ones = np.ones((X_test.shape[0], 1))
-    X_test = np.concatenate((ones, X_test), axis=1)
-    Y_hat = perceptron_test.predict(X_test)
+    Y_hat = perceptron_test.predict(X_test, addBias=True)
     print("R2:", perceptron_test.r2_evl(y_test, Y_hat))
     print("Score:", perceptron_test.score(y_test, Y_hat))
 

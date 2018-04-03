@@ -29,7 +29,7 @@ class ml_model(object):
         self.activation = activation
         self.w_ = []
         self.costs = []
-        self.isShuffled = False    
+        self.isShuffled = False   
         #print("ml_model: __init__")
 
 
@@ -125,7 +125,12 @@ class myPerceptron(ml_model):
         #print("shape of w_:", self.w_.shape)
         return np.dot(X_data, self.w_)
 
-    def predict(self, z):
+    def predict(self, z, addBias=False):
+        # Add one bias term
+        if(addBias==True):
+            ones = np.ones((z.shape[0], 1))
+            z = np.concatenate((ones, z), axis=1)
+        
         if (self.activation):
             return self.activation_fn(self.net_input(z))
         else:      
