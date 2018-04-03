@@ -28,7 +28,6 @@ class ml_model(object):
         self.shuffle = shuffle
         self.activation = activation
         self.w_ = []
-        self.b_ = 0    
         self.costs = []    
         #print("ml_model: __init__")
 
@@ -46,7 +45,6 @@ class ml_model(object):
         pass
 
     def r2_evl(self, Y, Y_hat):
-        Y = Y.reshape(Y.shape[0], 1)
         d1 = Y - Y_hat
         d2 = Y - Y.mean()
         #print("Shape of d1:", d1.shape)
@@ -75,47 +73,44 @@ class perceptron(ml_model):
     def fit(self, X_train, Y):
         # print("perceptron: train")
         #super().train()
+
+        # Dimensions, Features of X_Train
+        N, D = X_train.shape
+
         if (self.shuffle==True):
             #init w_ as random numbers
-            self.w_ = np.random.randn(1+X_train.shape[1],1)
+            self.w_ = np.random.randn(1 + D, 1)
 
             #shuffle X_train, Y
-            r = np.random.permutation(Y.shape[0])
+            r = np.random.permutation(N)
             X_train = X_train[r]
             Y = Y[r]
-            Y = Y.reshape(Y.shape[0], 1)
         else:
             # init w_ as zeros with w0
-            self.w_ = np.zeros(1 + X_train.shape[1], 1)        
+            self.w_ = np.zeros(1 + D, 1)        
 
         # Add one bias term
-        ones = np.ones((X_train.shape[0], 1))
+        ones = np.ones((N, 1))
         X_train = np.concatenate((ones, X_train), axis=1)
         
-        print("shape of X_train:", X_train.shape)
-        print("shape of w_:", self.w_.shape)
-        print("shape of Y:", Y.shape)
+        #print("shape of X_train:", X_train.shape)
+        #print("shape of w_:", self.w_.shape)
+        #print("shape of Y:", Y.shape)
         
         error=np.zeros(self.w_.shape)
         for epoch in range(self.num_epochs):
             Y_hat = self.predict(X_train)
             error = Y - Y_hat
-            
+                
             if(np.count_nonzero(error, axis=0)==0):
                 print("Finish Training at {0}-th run".format(epoch+1))
                 break
-            
+                
             delta_w = self.eta * np.dot(X_train.T, error)
             self.w_ += delta_w
             #self.errors_.append(error)
-            
-            if (epoch % 10 == 0):
-                pass
-                #print("{0} th run:".format(i))
-                #print("w_:", self.w_)
-                #print("errors_:\n", self.errors_) 
-        
-        print("final w_:\n", self.w_, "epochs:", (epoch+1), "/", self.num_epochs)
+              
+        print("final w_:\n", self.w_, "\nepochs:", (epoch+1), "/", self.num_epochs)
 
     def net_input(self, X_data):
         # net input: w0x0 + w1x1... + wixi
