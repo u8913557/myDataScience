@@ -18,9 +18,9 @@ if __name__ == '__main__':
     # Data Analysis
     Y = np.array([0, 0, 0, 1])
 
-    plt.scatter(X[Y==1, 0]==1, X[Y==1, 1]==1, color='red', \
+    plt.scatter(X[Y==1, 0], X[Y==1, 1], color='red', \
             marker='o', label='Y=1')
-    plt.scatter(X[Y==0, 0]==1, X[Y==0, 1]==1, color='blue', \
+    plt.scatter(X[Y==0, 0], X[Y==0, 1], color='blue', \
             marker='x', label='Y=0')
     plt.title("AND Gate Test")
     plt.xlabel("X0")
@@ -58,7 +58,7 @@ if __name__ == '__main__':
     # Data Analysis
     plt.scatter(X[Y==1, 0], X[Y==1, 1], color='red', \
             marker='o', label='Y=1')
-    plt.scatter(X[Y==0, 0]==1, X[Y==0, 1]==1, color='blue', \
+    plt.scatter(X[Y==0, 0], X[Y==0, 1], color='blue', \
             marker='x', label='Y=0')
     plt.title("OR Gate Test")
     plt.xlabel("X0")
@@ -92,9 +92,9 @@ if __name__ == '__main__':
 
     Y = np.array([0, 1, 1, 0])
 
-    plt.scatter(X[Y==1, 0]==1, X[Y==1, 1]==1, color='red', \
+    plt.scatter(X[Y==1, 0], X[Y==1, 1], color='red', \
             marker='o', label='Y=1')
-    plt.scatter(X[Y==0, 0]==1, X[Y==0, 1]==1, color='blue', \
+    plt.scatter(X[Y==0, 0], X[Y==0, 1], color='blue', \
             marker='x', label='Y=0')
     plt.title("XOR Gate Test")
     plt.xlabel("X0")
@@ -112,6 +112,7 @@ if __name__ == '__main__':
     print("R2:", perceptron_test.r2_evl(Y, Y_hat))
     print("Score:", perceptron_test.score(Y, Y_hat))
 
+    del perceptron_test
 
 
 
