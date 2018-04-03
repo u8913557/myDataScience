@@ -37,7 +37,10 @@ class ml_model(object):
         pass        
 
     def activation_fn(self, z):
-            return np.piecewise(z, [z < 0, z >= 0], [0, 1])
+            if(self.activation=="step"):
+                return np.piecewise(z, [z < 0, z >= 0], [-1, 1])
+            else:
+                return z
 
     def predict(self):
         pass
@@ -46,8 +49,8 @@ class ml_model(object):
         Y = Y.reshape(Y.shape[0], 1)
         d1 = Y - Y_hat
         d2 = Y - Y.mean()
-        print("Shape of d1:", d1.shape)
-        print("Shape of d2:", d2.shape)
+        #print("Shape of d1:", d1.shape)
+        #print("Shape of d2:", d2.shape)
         r2 = 1 - (d1.T.dot(d1) / d2.T.dot(d2))
         return r2
     

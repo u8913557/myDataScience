@@ -18,8 +18,9 @@ if __name__ == '__main__':
             marker='o', label='Y=1')
     plt.scatter(X[Y==0, 0]==1, X[Y==0, 1]==1, color='blue', \
             marker='x', label='Y=0')
-    plt.show()
-
+    plt.show()    
+    
+    Y[Y == 0] = -1
     perceptron_test = ml_model.perceptron(num_epochs=200)
     perceptron_test.fit(X, Y)
 
