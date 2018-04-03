@@ -21,9 +21,9 @@ class ml_model(object):
     errors_ : list, float
     """
 
-    def __init__(self, method=None, eta=0.01, num_epochs=100, shuffle=None, activation=None):
+    def __init__(self, method=None, learning_rate=0.01, num_epochs=100, shuffle=None, activation=None):
         self.method = method
-        self.eta = eta
+        self.learning_rate = learning_rate
         self.num_epochs = num_epochs
         self.shuffle = shuffle
         self.activation = activation
@@ -106,7 +106,7 @@ class myPerceptron(ml_model):
                 print("Finish Training at {0}-th run".format(epoch+1))
                 break
                 
-            delta_w = self.eta * np.dot(X_train.T, error)
+            delta_w = self.learning_rate * np.dot(X_train.T, error)
             self.w_ += delta_w
             #self.errors_.append(error)
               
