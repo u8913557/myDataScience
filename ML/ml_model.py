@@ -28,12 +28,13 @@ class ml_model(object):
         self.shuffle = shuffle
         self.activation = activation
         self.w_ = []
-        self.costs = []    
+        self.costs = []
+        self.isShuffled = False    
         #print("ml_model: __init__")
 
 
     def fit(self):
-        pass        
+        self.isShuffled=False      
 
     def activation_fn(self, z):
             if(self.activation=="step"):
@@ -78,7 +79,7 @@ class myPerceptron(ml_model):
         N, D = X_train.shape
         print("X_train has {0} features for {1} samples".format(D, N))
 
-        if (self.shuffle==True):
+        if (self.shuffle==True and self.isShuffled==False):
             #init w_ as random numbers
             self.w_ = np.random.randn(1 + D, 1)
 
@@ -86,6 +87,7 @@ class myPerceptron(ml_model):
             r = np.random.permutation(N)
             X_train = X_train[r]
             Y = Y[r]
+            self.isShuffled=True
         else:
             # init w_ as zeros with w0
             self.w_ = np.zeros(1 + D, 1)        
