@@ -114,6 +114,55 @@ if __name__ == '__main__':
 
     del perceptron_test
 
+    # Iris Dataset test
+    """
+    Three types of Iris:
+    Iris-setosa, Iris-versicolor and Iris-virginica
+    """
+    print("Iris Dataset test:")
+
+    # Get Data
+    iris_df = pd.read_csv('iris.data', header=None)
+    #print(iris_df.head(3))
+
+    """ select setosa and versicolor """
+    y_df = iris_df.iloc[0:100, 4].values
+    y_df = np.where((y_df=="Iris-setosa"), 1, -1)
+    y_df = y_df.reshape(y_df.shape[0], 1)
+
+    """ extract sepal length and petal length """
+    x_df = iris_df.iloc[0:100, [0, 2]].values
+    
+    # Data analysis
+    plt.scatter(x_df[0:50, 0], x_df[0:50, 1], color='red', \
+            marker='o', label='Iris-setosa')
+    plt.scatter(x_df[50:100, 0], x_df[50:100, 1], color='blue', \
+            marker='x', label='Iris-versicolor')
+    plt.title("Iris Dataset Test")
+    plt.xlabel("sepal length")
+    plt.ylabel("petal length")
+    plt.show()
+
+    # Prepare Data for training / testing
+    X_train, X_test, y_train, y_test = train_test_split(x_df, y_df, test_size=0.3, random_state=0)
+
+    perceptron_test = ml_model.myPerceptron(num_epochs=200)
+    perceptron_test.fit(X_train, y_train)
+   
+    ones = np.ones((X_test.shape[0], 1))
+    X_test = np.concatenate((ones, X_test), axis=1)
+    Y_hat = perceptron_test.predict(X_test)
+    print("R2:", perceptron_test.r2_evl(y_test, Y_hat))
+    print("Score:", perceptron_test.score(y_test, Y_hat))
+
+
+
+
+
+
+
+
+
 
 
 
