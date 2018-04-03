@@ -4,8 +4,10 @@ import matplotlib.pyplot as plt
 
 
 if __name__ == '__main__':
-    # AND Gate
-    print("AND Gate:")
+    # AND Gate test
+    print("AND Gate test:")
+
+    # Get Data
     X = np.array([
             [0, 0],
             [0, 1],
@@ -13,6 +15,7 @@ if __name__ == '__main__':
             [1, 1]
         ])
 
+    # Data Analysis
     Y = np.array([0, 0, 0, 1])
 
     plt.scatter(X[Y==1, 0]==1, X[Y==1, 1]==1, color='red', \
@@ -24,11 +27,13 @@ if __name__ == '__main__':
     plt.ylabel("X1")
     plt.show()    
     
+    # Prepare Data for training
     Y[Y == 0] = -1
     Y = Y.reshape(Y.shape[0], 1)
     perceptron_test = ml_model.myPerceptron(num_epochs=200)
     perceptron_test.fit(X, Y)
 
+    # Prepare Data for teating
     ones = np.ones((X.shape[0], 1))
     X_test = np.concatenate((ones, X), axis=1)
     Y_hat = perceptron_test.predict(X_test)
@@ -37,9 +42,10 @@ if __name__ == '__main__':
 
     del perceptron_test
 
-    # OR Gate
-    print("OR Gate:")
+    # OR Gate test
+    print("OR Gate test:")
 
+    # Get Data
     X = np.array([
             [0, 0],
             [0, 1],
@@ -49,7 +55,8 @@ if __name__ == '__main__':
 
     Y = np.array([0, 1, 1, 1])
 
-    plt.scatter(X[Y==1, 0]==1, X[Y==1, 1]==1, color='red', \
+    # Data Analysis
+    plt.scatter(X[Y==1, 0], X[Y==1, 1], color='red', \
             marker='o', label='Y=1')
     plt.scatter(X[Y==0, 0]==1, X[Y==0, 1]==1, color='blue', \
             marker='x', label='Y=0')
@@ -58,11 +65,13 @@ if __name__ == '__main__':
     plt.ylabel("X1")
     plt.show()
 
+    # Prepare Data for training
     Y[Y == 0] = -1
     Y = Y.reshape(Y.shape[0], 1)
     perceptron_test = ml_model.myPerceptron(num_epochs=200)
     perceptron_test.fit(X, Y)
 
+    # Prepare Data for testing
     ones = np.ones((X.shape[0], 1))
     X_test = np.concatenate((ones, X), axis=1)
     Y_hat = perceptron_test.predict(X_test)
@@ -71,8 +80,8 @@ if __name__ == '__main__':
 
     del perceptron_test
 
-    # XOR Gate
-    print("OR Gate:")
+    # XOR Gate test
+    print("XOR Gate test:")
 
     X = np.array([
             [0, 0],
