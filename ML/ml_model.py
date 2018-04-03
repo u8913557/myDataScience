@@ -33,8 +33,14 @@ class ml_model(object):
         #print("ml_model: __init__")
 
 
-    def fit(self):
-        self.isShuffled=False      
+    def fit(self, X_train, Y):
+        self.isShuffled=False
+        self.X_train = X_train
+        self.Y = Y
+
+        # Dimensions, Features of X_Train
+        self.N, self.D = self.X_train.shape
+        print("X_train has {0} samples with {1} features".format(self.N, self.D))
 
     def activation_fn(self, z):
             if(self.activation=="step"):
@@ -73,47 +79,44 @@ class myPerceptron(ml_model):
     """
     def fit(self, X_train, Y):
         # print("perceptron: train")
-        # super().fit()
-
-        # Dimensions, Features of X_Train
-        N, D = X_train.shape
-        print("X_train has {0} features for {1} samples".format(D, N))
-
+        super().fit(X_train, Y)
+        
         if (self.shuffle==True and self.isShuffled==False):
             #init w_ as random numbers
-            self.w_ = np.random.randn(1 + D, 1)
+            self.w_ = np.random.randn(1 + self.D, 1)
 
             #shuffle X_train, Y
-            r = np.random.permutation(N)
-            X_train = X_train[r]
-            Y = Y[r]
+            r = np.random.permutation(self.N)
+            self.X_train = self.X_train[r]
+            self.Y = self.Y[r]
+
             self.isShuffled=True
         else:
             # init w_ as zeros with w0
-            self.w_ = np.zeros(1 + D, 1)        
+            self.w_ = np.zeros(1 + self.D, 1)        
 
         # Add one bias term
-        ones = np.ones((N, 1))
-        X_train = np.concatenate((ones, X_train), axis=1)
+        ones = np.ones((self.N, 1))
+        self.X_train = np.concatenate((ones, self.X_train), axis=1)
         
-        #print("shape of X_train:", X_train.shape)
+        #print("shape of X_train:", self.X_train.shape)
         #print("shape of w_:", self.w_.shape)
-        #print("shape of Y:", Y.shape)
+        #print("shape of Y:", self.Y.shape)
         
         error=np.zeros(self.w_.shape)
         for epoch in range(self.num_epochs):
-            Y_hat = self.predict(X_train)
-            error = Y - Y_hat
+            Y_hat = self.predict(self.X_train)
+            error = self.Y - Y_hat
                 
             if(np.count_nonzero(error, axis=0)==0):
                 print("Finish Training at {0}-th run".format(epoch+1))
                 break
                 
-            delta_w = self.learning_rate * np.dot(X_train.T, error)
+            delta_w = self.learning_rate * np.dot(self.X_train.T, error)
             self.w_ += delta_w
             #self.errors_.append(error)
               
-        print("final w_:\n", self.w_, "\nepochs:", (epoch+1), "/", self.num_epochs)
+        print("final w:\n", self.w_, "\nepochs:", (epoch+1), "/", self.num_epochs)
 
     def net_input(self, X_data):
         # net input: w0x0 + w1x1... + wixi
