@@ -18,6 +18,8 @@ if __name__ == '__main__':
         plt.title("AND Gate Test")
         plt.xlabel("X0")
         plt.ylabel("X1")
+        plt.legend(loc='upper middle')
+        plt.tight_layout()
         plt.show()    
         
         # Prepare Data for training
@@ -45,6 +47,8 @@ if __name__ == '__main__':
         plt.title("OR Gate Test")
         plt.xlabel("X0")
         plt.ylabel("X1")
+        plt.legend(loc='upper middle')
+        plt.tight_layout()
         plt.show()
 
         # Prepare Data for training
@@ -72,6 +76,8 @@ if __name__ == '__main__':
         plt.title("XOR Gate Test")
         plt.xlabel("X0")
         plt.ylabel("X1")
+        plt.legend(loc='upper middle')
+        plt.tight_layout()
         plt.show()
 
         Y[Y == 0] = -1
@@ -97,6 +103,8 @@ if __name__ == '__main__':
         plt.title("Donut test")
         plt.xlabel("X0")
         plt.ylabel("X1")
+        plt.legend(loc='upper left')
+        plt.tight_layout()
         plt.show()
 
         Y[Y == 0] = -1
@@ -119,6 +127,8 @@ if __name__ == '__main__':
         plt.title("Donut Dataset Predict result")
         plt.xlabel("X0")
         plt.ylabel("X1")
+        plt.legend(loc='upper left')
+        plt.tight_layout()
         plt.show()
 
         del perceptron_test
@@ -136,6 +146,8 @@ if __name__ == '__main__':
         plt.title("Iris Dataset Test")
         plt.xlabel(selected_features[0])
         plt.ylabel(selected_features[1])
+        plt.legend(loc='upper left')
+        plt.tight_layout()
         plt.show()
 
         # Prepare Data for training / testing
@@ -155,12 +167,14 @@ if __name__ == '__main__':
         plt.scatter(X_test[y_test[:, 0]==-1, 0], X_test[y_test[:, 0]==-1, 1], color='blue', \
                 marker='x', label=selected_lables[1])
         plt.scatter(X_test[Y_hat[:, 0]==1, 0], X_test[Y_hat[:, 0]==1, 1], color='pink', \
-                marker='+', label=selected_lables[0])
+                marker='+', label='Predict '+ selected_lables[0])
         plt.scatter(X_test[Y_hat[:, 0]==-1, 0], X_test[Y_hat[:, 0]==-1, 1], color='green', \
-                marker='>', label=selected_lables[1])
+                marker='>', label='Predict '+ selected_lables[1])
         plt.title("Iris Dataset Predict result")
         plt.xlabel(selected_features[0])
         plt.ylabel(selected_features[1])
+        plt.legend(loc='upper left')
+        plt.tight_layout()
         plt.show()
 
         # Wine Dataset test
@@ -175,6 +189,8 @@ if __name__ == '__main__':
         plt.title("Wine Dataset Test")
         plt.xlabel(selected_features[0])
         plt.ylabel(selected_features[1])
+        plt.legend(loc='upper left')
+        plt.tight_layout()
         plt.show()
 
         # Prepare Data for training / testing
@@ -200,6 +216,8 @@ if __name__ == '__main__':
         plt.title("Wine Dataset Predict result")
         plt.xlabel(selected_features[0])
         plt.ylabel(selected_features[1])
+        plt.legend(loc='upper left')
+        plt.tight_layout()
         plt.show()
 
 
