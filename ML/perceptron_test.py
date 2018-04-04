@@ -108,6 +108,19 @@ if __name__ == '__main__':
         perceptron_test.r2_evl(Y, Y_hat)
         perceptron_test.score(Y, Y_hat)
 
+        plt.scatter(X[Y[:,0]==1, 0], X[Y[:,0]==1, 1], color='red', \
+                marker='^', label='Y=1')
+        plt.scatter(X[Y[:,0]==-1, 0], X[Y[:,0]==-1, 1], color='blue', \
+                marker='x', label='Y=0')
+        plt.scatter(X[Y_hat[:, 0]==1, 0], X[Y_hat[:, 0]==1, 1], color='pink', \
+                marker='+', label="Y_hat=1")
+        plt.scatter(X[Y_hat[:, 0]==-1, 0], X[Y_hat[:, 0]==-1, 1], color='green', \
+                marker='>', label="Y_hat=0")
+        plt.title("Donut Dataset Predict result")
+        plt.xlabel("X0")
+        plt.ylabel("X1")
+        plt.show()
+
         del perceptron_test
 
         # Iris Dataset test
@@ -137,11 +150,23 @@ if __name__ == '__main__':
         perceptron_test.r2_evl(y_test, Y_hat)
         perceptron_test.score(y_test, Y_hat)
 
+        plt.scatter(X_test[y_test[:, 0]==1, 0], X_test[y_test[:,0]==1, 1], color='red', \
+                marker='^', label=selected_lables[0])
+        plt.scatter(X_test[y_test[:, 0]==-1, 0], X_test[y_test[:, 0]==-1, 1], color='blue', \
+                marker='x', label=selected_lables[1])
+        plt.scatter(X_test[Y_hat[:, 0]==1, 0], X_test[Y_hat[:, 0]==1, 1], color='pink', \
+                marker='+', label=selected_lables[0])
+        plt.scatter(X_test[Y_hat[:, 0]==-1, 0], X_test[Y_hat[:, 0]==-1, 1], color='green', \
+                marker='>', label=selected_lables[1])
+        plt.title("Iris Dataset Predict result")
+        plt.xlabel(selected_features[0])
+        plt.ylabel(selected_features[1])
+        plt.show()
+
         # Wine Dataset test
         print("Wine Dataset test:")
 
         X, Y, selected_features, selected_lables = get_Wine()    
-        
         # Data analysis
         plt.scatter(X[Y==1, 0], X[Y==1, 1], color='red', \
                 marker='o', label=selected_lables[0])
@@ -164,6 +189,18 @@ if __name__ == '__main__':
         perceptron_test.r2_evl(y_test, Y_hat)
         perceptron_test.score(y_test, Y_hat)
 
+        plt.scatter(X_test[y_test[:, 0]==1, 0], X_test[y_test[:,0]==1, 1], color='red', \
+                marker='^', label=selected_lables[0])
+        plt.scatter(X_test[y_test[:, 0]==-1, 0], X_test[y_test[:, 0]==-1, 1], color='blue', \
+                marker='x', label=selected_lables[1])
+        plt.scatter(X_test[Y_hat[:, 0]==1, 0], X_test[Y_hat[:, 0]==1, 1], color='pink', \
+                marker='+', label=selected_lables[0])
+        plt.scatter(X_test[Y_hat[:, 0]==-1, 0], X_test[Y_hat[:, 0]==-1, 1], color='green', \
+                marker='>', label=selected_lables[1])
+        plt.title("Wine Dataset Predict result")
+        plt.xlabel(selected_features[0])
+        plt.ylabel(selected_features[1])
+        plt.show()
 
 
 
