@@ -1,5 +1,6 @@
 
 import numpy as np
+from sklearn.metrics import accuracy_score
 
 class ml_model(object):
     """
@@ -29,14 +30,20 @@ class ml_model(object):
         self.activation = activation
         self.w_ = []
         self.costs = []
-        self.isShuffled = False   
+        self.isShuffled = False
         #print("ml_model: __init__")
 
 
-    def fit(self, X_train, Y):
-        self.isShuffled=False
-        self.X_train = X_train
-        self.Y = Y
+    def fit(self, X_train, Y, standardize=False):
+        self.isShuffled=False        
+
+        if(standardize==True):
+            X_train = (X_train - X_train.mean()) / X_train.std()
+            self.X_train = X_train
+            self.Y = Y
+        else:
+            self.X_train = X_train
+            self.Y = Y
 
         # Dimensions, Features of X_Train
         self.N, self.D = self.X_train.shape
@@ -57,10 +64,11 @@ class ml_model(object):
         #print("Shape of d1:", d1.shape)
         #print("Shape of d2:", d2.shape)
         r2 = 1 - (d1.T.dot(d1) / d2.T.dot(d2))
-        return r2
+        print("R2:", r2)
 
     def score(self, Y, Y_hat):
-        return np.mean(Y_hat == Y)
+        print('Accuracy: %.2f' % accuracy_score(Y, Y_hat))
+        print('Score:', np.mean(Y_hat == Y))
     
 
 class myPerceptron(ml_model):
@@ -77,9 +85,9 @@ class myPerceptron(ml_model):
     Y : array, float
         "True" Y
     """
-    def fit(self, X_train, Y):
+    def fit(self, X_train, Y, standardize=False):
         # print("perceptron: train")
-        super().fit(X_train, Y)
+        super().fit(X_train, Y, standardize)
         
         if (self.shuffle==True and self.isShuffled==False):
             #init w_ as random numbers
@@ -125,7 +133,10 @@ class myPerceptron(ml_model):
         #print("shape of w_:", self.w_.shape)
         return np.dot(X_data, self.w_)
 
-    def predict(self, z, addBias=False):
+    def predict(self, z, addBias=False, standardize=False):
+        if(standardize==True):
+            z = (z - z.mean()) / z.std()
+
         # Add one bias term
         if(addBias==True):
             ones = np.ones((z.shape[0], 1))
