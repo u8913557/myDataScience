@@ -18,7 +18,7 @@ if __name__ == '__main__':
         plt.title("AND Gate Test")
         plt.xlabel("X0")
         plt.ylabel("X1")
-        plt.legend(loc='upper middle')
+        plt.legend(loc='upper center')
         plt.tight_layout()
         plt.show()    
         
@@ -47,7 +47,7 @@ if __name__ == '__main__':
         plt.title("OR Gate Test")
         plt.xlabel("X0")
         plt.ylabel("X1")
-        plt.legend(loc='upper middle')
+        plt.legend(loc='upper center')
         plt.tight_layout()
         plt.show()
 
@@ -76,7 +76,7 @@ if __name__ == '__main__':
         plt.title("XOR Gate Test")
         plt.xlabel("X0")
         plt.ylabel("X1")
-        plt.legend(loc='upper middle')
+        plt.legend(loc='upper center')
         plt.tight_layout()
         plt.show()
 
