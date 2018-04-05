@@ -49,7 +49,9 @@ class ml_model(object):
         print("X_train has {0} samples with {1} features".format(self.N, self.D))
 
     def activation_fn(self, z, activation=None):
-            if(activation=="step"):
+            if(activation==None):
+                return z
+            elif(activation=="step"):
                 return np.piecewise(z, [z < 0, z >= 0], [-1, 1])
             else:
                 return z
@@ -131,7 +133,18 @@ class myPerceptron(ml_model):
               
         print("final w:\n", self.w_, "\nepochs:", (epoch+1), "/", self.num_epochs)
 
+    def predict(self, X_data, addBias=False, standardize=False):
+        if(standardize==True):
+            X_data = (X_data - X_data.mean()) / X_data.std()
 
+        # Add one bias term
+        if(addBias==True):
+            ones = np.ones((X_data.shape[0], 1))
+            X_data = np.concatenate((ones, X_data), axis=1)
+        
+        z = self.net_input(X_data)
+        Y_hat = self.activation_fn(z, activation="step")
+        return Y_hat
     def predict(self, z, addBias=False, standardize=False,activation="step"):
         if(standardize==True):
             z = (z - z.mean()) / z.std()
