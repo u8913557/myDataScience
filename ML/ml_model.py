@@ -22,14 +22,13 @@ class ml_model(object):
     errors_ : list, float
     """
 
-    def __init__(self, method=None, learning_rate=0.01, num_epochs=100, shuffle=None, activation=None):
+    def __init__(self, method=None, learning_rate=0.01, num_epochs=100, shuffle=None):
         self.method = method
         self.learning_rate = learning_rate
         self.num_epochs = num_epochs
         self.shuffle = shuffle
-        self.activation = activation
         self.w_ = []
-        self.costs = []
+        self.cost_ = []
         self.isShuffled = False
         #print("ml_model: __init__")
 
@@ -49,8 +48,8 @@ class ml_model(object):
         self.N, self.D = self.X_train.shape
         print("X_train has {0} samples with {1} features".format(self.N, self.D))
 
-    def activation_fn(self, z):
-            if(self.activation=="step"):
+    def activation_fn(self, z, activation=None):
+            if(activation=="step"):
                 return np.piecewise(z, [z < 0, z >= 0], [-1, 1])
             else:
                 return z
@@ -73,9 +72,9 @@ class ml_model(object):
 
 class myPerceptron(ml_model):
   
-    def __init__(self, method=None, eta=0.01, num_epochs=100, shuffle=True, activation='step'):
+    def __init__(self, method=None, eta=0.01, num_epochs=100, shuffle=True):
         #print("perceptron: __init__")  
-        super().__init__(method, eta, num_epochs, shuffle, activation)          
+        super().__init__(method, eta, num_epochs, shuffle)          
 
     """
     Parameters
@@ -133,7 +132,7 @@ class myPerceptron(ml_model):
         #print("shape of w_:", self.w_.shape)
         return np.dot(X_data, self.w_)
 
-    def predict(self, z, addBias=False, standardize=False):
+    def predict(self, z, addBias=False, standardize=False,activation="step"):
         if(standardize==True):
             z = (z - z.mean()) / z.std()
 
@@ -142,10 +141,8 @@ class myPerceptron(ml_model):
             ones = np.ones((z.shape[0], 1))
             z = np.concatenate((ones, z), axis=1)
         
-        if (self.activation):
-            return self.activation_fn(self.net_input(z))
-        else:      
-            return input(z)
+        return self.activation_fn(self.net_input(z), activation)
+
 
         
 
