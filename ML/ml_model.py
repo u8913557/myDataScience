@@ -54,6 +54,13 @@ class ml_model(object):
             else:
                 return z
 
+    def net_input(self, X_data):
+        # net input: w0x0 + w1x1... + wixi
+        #print("net_input:")
+        #print("shape of X_data:", X_data.shape)
+        #print("shape of w_:", self.w_.shape)
+        return np.dot(X_data, self.w_)
+
     def predict(self):
         pass
 
@@ -85,7 +92,6 @@ class myPerceptron(ml_model):
         "True" Y
     """
     def fit(self, X_train, Y, standardize=False):
-        # print("perceptron: train")
         super().fit(X_train, Y, standardize)
         
         if (self.shuffle==True and self.isShuffled==False):
@@ -125,12 +131,6 @@ class myPerceptron(ml_model):
               
         print("final w:\n", self.w_, "\nepochs:", (epoch+1), "/", self.num_epochs)
 
-    def net_input(self, X_data):
-        # net input: w0x0 + w1x1... + wixi
-        #print("net_input:")
-        #print("shape of X_data:", X_data.shape)
-        #print("shape of w_:", self.w_.shape)
-        return np.dot(X_data, self.w_)
 
     def predict(self, z, addBias=False, standardize=False,activation="step"):
         if(standardize==True):
