@@ -8,7 +8,7 @@ class ml_model(object):
     ------------
     method : str
         which ML lib
-    eta : float (default: 0.01)
+    learning_rate : float (default: 0.01)
         Learning rate (between 0.0 and 1.0)
     num_epochs : int (default: 100)
         How many run to train dataset.
@@ -105,7 +105,7 @@ class ml_model(object):
 
 class myPerceptron(ml_model):
   
-    def __init__(self, method=None, eta=0.01, num_epochs=100, shuffle=True):
+    def __init__(self, method=None, learning_rate=0.01, num_epochs=100, shuffle=True):
         #print("perceptron: __init__")  
         super().__init__(method, learning_rate, num_epochs, shuffle)          
 
