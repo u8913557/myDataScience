@@ -93,12 +93,18 @@ def get_Iris(multi=False):
         selected_features = iris_df.columns[indice]
         print("selected_features:", selected_features)
         
-        indice = np.append(indice, [4])  
+        indice = np.append(indice, [4])
+
+        # Fixed index for debugging
+        #indice = [0,2,4] 
         iris_df = iris_df[iris_df.columns[indice]]   
         #print("iris_df:", iris_df)     
         
         # Make new data frame:random choice 2 class lables from y (3 class lables)
         indice = np.random.choice(3, 2, replace=False)
+
+        # Fixed index for debugging
+        #indice = [0,2]
         selected_lables = lables[indice]
         print("selected_lables:", selected_lables)
 
