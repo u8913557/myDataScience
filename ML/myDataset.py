@@ -2,6 +2,52 @@
 import numpy as np
 import pandas as pd
 import os
+import matplotlib.pyplot as plt
+from matplotlib.colors import ListedColormap
+
+def plot_cost(cost_, learning_rate):
+    plt.plot(range(1, len(cost_) + 1), cost_, marker='o')
+    plt.xlabel('Epochs')
+    plt.ylabel('Sum-squared-error')
+    plt.title('Adaline - Learning rate: {0}'.format(learning_rate))
+    plt.tight_layout()
+    plt.show()
+
+def plot_decision_regions(X, y, classifier, resolution=0.02):
+    """ setup marker generator and color map """
+    markers = ('s', 'x', 'o', '^', 'v')
+    colors = ('red', 'blue', 'lightgreen', 'gray', 'cyan')
+    cmap = ListedColormap(colors[:len(np.unique(y))])
+
+    """ plot the decision surface """
+    x1_min, x1_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+    x2_min, x2_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+    xx1, xx2 = np.meshgrid(np.arange(x1_min, x1_max, resolution),
+                           np.arange(x2_min, x2_max, resolution))
+
+    X_data = np.array([xx1.ravel(), xx2.ravel()]).T
+    print("Shape of X_data:", X_data.shape)
+    ones = np.ones((X_data.shape[0], 1))
+    X_data = np.concatenate((ones, X_data), axis=1)
+
+    print("Shape of new X_data:", X_data.shape)
+    Z = classifier.predict(X_data)
+    Z = Z.reshape(xx1.shape)
+
+    plt.contourf(xx1, xx2, Z, alpha=0.4, cmap=cmap)
+    plt.xlim(xx1.min(), xx1.max())
+    plt.ylim(xx2.min(), xx2.max())
+
+    # plot class samples
+    for idx, cl in enumerate(np.unique(y)):
+        plt.scatter(x=X[y == cl, 0], 
+                    y=X[y == cl, 1],
+                    alpha=0.8, 
+                    c=cmap(idx),
+                    edgecolor='black',
+                    marker=markers[idx], 
+                    label=cl)
+
 
 def get_AndGate():
     # Get Data
@@ -96,7 +142,7 @@ def get_Iris(multi=False):
         indice = np.append(indice, [4])
 
         # Fixed index for debugging
-        #indice = [0,2,4] 
+        #indice = [0,2,4]
         iris_df = iris_df[iris_df.columns[indice]]   
         #print("iris_df:", iris_df)     
         
@@ -141,7 +187,7 @@ def get_Wine(multi=False):
                    'Proline']
     #print(df_wine.head(3))
     lables = np.unique(df_wine['Class label'])
-    print('Class labels', lables)
+    #print('Class labels', lables)
 
     if(multi==False):
         # Make new data frame:random choice 13 features + one y

@@ -1,5 +1,6 @@
 
 import numpy as np
+import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score
 
 class ml_model(object):
@@ -41,14 +42,14 @@ class ml_model(object):
         self.Y = Y
 
         if(standardize==True):
-            X_std = X_train
+            X_std = np.copy(X_train) 
             for i in range(self.D):
                 X_std[:,i] = (X_train[:,i] - X_train[:,i].mean()) / X_train[:,i].std()
 
-            self.X_train = X_std
+            self.X_train = np.copy(X_std)
 
         else:
-            self.X_train = X_train       
+            self.X_train = np.copy(X_train)
 
         if (self.shuffle==True):
             #init w_ as random numbers
@@ -72,12 +73,13 @@ class ml_model(object):
         print("shape of Y:", self.Y.shape)
 
     def activation_fn(self, z, activation=None):
+
             if(activation==None):
                 return z
-            elif(activation=="step"):
+            elif(activation=="sign"):
                 return np.piecewise(z, [z < 0, z >= 0], [-1, 1])
-            else:
-                return z
+            elif(activation=="step"):
+                return np.piecewise(z, [z < 0, z >= 0], [0, 1])
 
     def net_input(self, X_data):
         # net input: w0x0 + w1x1... + wixi
@@ -105,9 +107,10 @@ class ml_model(object):
 
 class myPerceptron(ml_model):
   
-    def __init__(self, method=None, learning_rate=0.01, num_epochs=100, shuffle=True):
+    def __init__(self, method=None, learning_rate=0.01, num_epochs=100, shuffle=True, activation="sign"):
         #print("perceptron: __init__")  
-        super().__init__(method, learning_rate, num_epochs, shuffle)          
+        super().__init__(method, learning_rate, num_epochs, shuffle)
+        self.activation = activation          
 
     """
     Parameters
@@ -122,12 +125,12 @@ class myPerceptron(ml_model):
         
         self.errors_ = []
         for epoch in range(self.num_epochs):
-            if 0:
+            if (0):
                 Y_hat = self.predict(self.X_train)
                 error = self.Y - Y_hat                
                 delta_w = self.learning_rate * np.dot(self.X_train.T, error)
                 self.w_ += delta_w
-                self.errors_.append(error.sum())
+                self.errors_.append(error.mean())
             else :
                 errors = 0
                 for xi, y in zip(self.X_train, Y):
@@ -139,10 +142,17 @@ class myPerceptron(ml_model):
                 self.errors_.append(errors)
               
         print("final w:\n", self.w_, "\nepochs:", (epoch+1), "/", self.num_epochs)
+        plt.plot(range(1, len(self.errors_) + 1),
+                self.errors_, marker='o')
+        plt.xlabel('Epochs')
+        plt.ylabel('Number of erros')
+        plt.show()
 
     def predict(self, X_data, addBias=False, standardize=False):
+        
         if(standardize==True):
-            X_data = (X_data - X_data.mean()) / X_data.std()
+            for i in range(self.D):
+                X_data[:,i] = (X_data[:,i] - X_data[:,i].mean()) / X_data[:,i].std()
 
         # Add one bias term
         if(addBias==True):
@@ -150,18 +160,62 @@ class myPerceptron(ml_model):
             X_data = np.concatenate((ones, X_data), axis=1)
         
         z = self.net_input(X_data)
-        Y_hat = self.activation_fn(z, activation="step")
+        #print("z:",z)
+        Y_hat = self.activation_fn(z, self.activation)
+        #print("Y_hat:",Y_hat)
         return Y_hat
-    def predict(self, z, addBias=False, standardize=False,activation="step"):
+
+class myAdaline(ml_model):
+  
+    def __init__(self, method=None, learning_rate=0.0001, num_epochs=200, shuffle=True):
+        #print("perceptron: __init__")  
+        super().__init__(method, learning_rate, num_epochs, shuffle)          
+
+    """
+    Parameters
+    ------------
+    X_train : array, float
+        Dataset for traninig
+    Y : array, float
+        "True" Y
+    """
+    def fit(self, X_train, Y, standardize=False):
+        super().fit(X_train, Y, standardize)       
+        
+        cost = 0
+        for epoch in range(self.num_epochs):
+            z = self.net_input(self.X_train)
+            output = self.activation_fn(z, activation=None)
+            error = (self.Y - output)
+            self.w_[1:] += self.learning_rate * np.dot(self.X_train[:, 1:].T, error) 
+            self.w_[0] += self.learning_rate * error.sum() 
+            cost = (error**2).sum() / 2.0
+            self.cost_.append(cost)                      
+              
+        print("final w:\n", self.w_, "\nFinal cost:\n", cost, "\nepochs:\n", (epoch+1), "/", self.num_epochs)
+
+        plt.plot(range(1, len(self.cost_) + 1), self.cost_, marker='o')
+        plt.xlabel('Epochs')
+        plt.ylabel('Sum-squared-error')
+        plt.title('Adaline - Learning rate: {0}'.format(self.learning_rate))
+        plt.tight_layout()
+        plt.show()
+
+    def predict(self, X_data, addBias=False, standardize=False):
+    
         if(standardize==True):
-            z = (z - z.mean()) / z.std()
+            for i in range(self.D):
+                X_data[:,i] = (X_data[:,i] - X_data[:,i].mean()) / X_data[:,i].std()
 
         # Add one bias term
         if(addBias==True):
-            ones = np.ones((z.shape[0], 1))
-            z = np.concatenate((ones, z), axis=1)
+            ones = np.ones((X_test.shape[0], 1))
+            X_data = np.concatenate((ones, X_data), axis=1)
         
-        return self.activation_fn(self.net_input(z), activation)
+        z = self.net_input(X_data)
+        output = self.activation_fn(z, activation=None)
+        Y_hat = self.activation_fn(output, activation="sign")
+        return Y_hat
 
 
         
