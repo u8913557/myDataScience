@@ -95,9 +95,10 @@ class ml_model(object):
         #print("Shape of d1:", d1.shape)
         #print("Shape of d2:", d2.shape)
         r2 = 1 - (d1.T.dot(d1) / d2.T.dot(d2))
-        print("R2:", r2)
+        print("R2:", r2[0][0])
 
     def score(self, Y, Y_hat):
+        print('Misclassified samples: %d' % (Y != Y_hat).sum())
         print('Accuracy: %.2f' % accuracy_score(Y, Y_hat))
         print('Score:', np.mean(Y_hat == Y))
     
@@ -106,7 +107,7 @@ class myPerceptron(ml_model):
   
     def __init__(self, method=None, eta=0.01, num_epochs=100, shuffle=True):
         #print("perceptron: __init__")  
-        super().__init__(method, eta, num_epochs, shuffle)          
+        super().__init__(method, learning_rate, num_epochs, shuffle)          
 
     """
     Parameters
@@ -117,42 +118,25 @@ class myPerceptron(ml_model):
         "True" Y
     """
     def fit(self, X_train, Y, standardize=False):
-        super().fit(X_train, Y, standardize)
+        super().fit(X_train, Y, standardize)       
         
-        if (self.shuffle==True and self.isShuffled==False):
-            #init w_ as random numbers
-            self.w_ = np.random.randn(1 + self.D, 1)
-
-            #shuffle X_train, Y
-            r = np.random.permutation(self.N)
-            self.X_train = self.X_train[r]
-            self.Y = self.Y[r]
-
-            self.isShuffled=True
-        else:
-            # init w_ as zeros with w0
-            self.w_ = np.zeros(1 + self.D, 1)        
-
-        # Add one bias term
-        ones = np.ones((self.N, 1))
-        self.X_train = np.concatenate((ones, self.X_train), axis=1)
-        
-        #print("shape of X_train:", self.X_train.shape)
-        #print("shape of w_:", self.w_.shape)
-        #print("shape of Y:", self.Y.shape)
-        
-        error=np.zeros(self.w_.shape)
+        self.errors_ = []
         for epoch in range(self.num_epochs):
-            Y_hat = self.predict(self.X_train)
-            error = self.Y - Y_hat
-                
-            if(np.count_nonzero(error, axis=0)==0):
-                print("Finish Training at {0}-th run".format(epoch+1))
-                break
-                
-            delta_w = self.learning_rate * np.dot(self.X_train.T, error)
-            self.w_ += delta_w
-            #self.errors_.append(error)
+            if 0:
+                Y_hat = self.predict(self.X_train)
+                error = self.Y - Y_hat                
+                delta_w = self.learning_rate * np.dot(self.X_train.T, error)
+                self.w_ += delta_w
+                self.errors_.append(error.sum())
+            else :
+                errors = 0
+                for xi, y in zip(self.X_train, Y):
+                    y_hat = self.predict(xi)          
+                    error = y - y_hat
+                    delta_w = self.learning_rate * np.dot(xi.reshape(xi.shape[0], 1), error.reshape(error.shape[0],1))
+                    self.w_ += delta_w
+                    errors += int(error != 0.0)
+                self.errors_.append(errors)
               
         print("final w:\n", self.w_, "\nepochs:", (epoch+1), "/", self.num_epochs)
 
