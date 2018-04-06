@@ -29,24 +29,47 @@ class ml_model(object):
         self.shuffle = shuffle
         self.w_ = []
         self.cost_ = []
-        self.isShuffled = False
         #print("ml_model: __init__")
 
 
     def fit(self, X_train, Y, standardize=False):
-        self.isShuffled=False        
-
-        if(standardize==True):
-            X_train = (X_train - X_train.mean()) / X_train.std()
-            self.X_train = X_train
-            self.Y = Y
-        else:
-            self.X_train = X_train
-            self.Y = Y
 
         # Dimensions, Features of X_Train
-        self.N, self.D = self.X_train.shape
-        print("X_train has {0} samples with {1} features".format(self.N, self.D))
+        self.N, self.D = X_train.shape
+        print("X_train has {0} samples with {1} features".format(self.N, self.D))     
+
+        self.Y = Y
+
+        if(standardize==True):
+            X_std = X_train
+            for i in range(self.D):
+                X_std[:,i] = (X_train[:,i] - X_train[:,i].mean()) / X_train[:,i].std()
+
+            self.X_train = X_std
+
+        else:
+            self.X_train = X_train       
+
+        if (self.shuffle==True):
+            #init w_ as random numbers
+            self.w_ = np.random.randn(1 + self.D, 1)
+
+            #shuffle X_train, Y
+            r = np.random.permutation(self.N)
+            self.X_train = self.X_train[r]
+            self.Y = self.Y[r]
+
+        else:
+            # init w_ as zeros with w0
+            self.w_ = np.zeros((1 + self.D, 1))        
+
+        # Add one bias term
+        ones = np.ones((self.N, 1))
+        self.X_train = np.concatenate((ones, self.X_train), axis=1)
+        
+        print("shape of X_train:", self.X_train.shape)
+        print("shape of w_:", self.w_.shape)
+        print("shape of Y:", self.Y.shape)
 
     def activation_fn(self, z, activation=None):
             if(activation==None):
