@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 
 
 if __name__ == '__main__':
-        """
+        
         # Donut test
         print("Donut test:")
 
@@ -48,7 +48,7 @@ if __name__ == '__main__':
         plt.show()
 
         del adaline_test
-        """
+        
 
         # Iris Dataset test
         # print("Iris Dataset test:")
@@ -71,7 +71,7 @@ if __name__ == '__main__':
         X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3, random_state=0)
         y_train = y_train.reshape(y_train.shape[0], 1)
         y_test = y_test.reshape(y_test.shape[0], 1)
-        adaline_test = ml_model.myAdaline(num_epochs=300, learning_rate=0.01, shuffle=True)
+        adaline_test = ml_model.myAdaline(num_epochs=15, learning_rate=0.01, shuffle=True)
         adaline_test.fit(X_train, y_train, standardize=True)
 
         Y_hat = adaline_test.predict(X_test, addBias=True, standardize=True)
@@ -118,11 +118,9 @@ if __name__ == '__main__':
 
         y_train = y_train.reshape(y_train.shape[0], 1)
         y_test = y_test.reshape(y_test.shape[0], 1)
-        adaline_test = ml_model.myAdaline(num_epochs=10, learning_rate=0.01)
+        adaline_test = ml_model.myAdaline(num_epochs=10, learning_rate=0.01, shuffle=True)
         adaline_test.fit(X_train, y_train, standardize=True)
-
-        plot_cost(adaline_test.cost_, adaline_test.learning_rate)
-        
+      
         Y_hat = adaline_test.predict(X_test, addBias=True, standardize=True)
         adaline_test.r2_evl(y_test, Y_hat)
         adaline_test.score(y_test, Y_hat)

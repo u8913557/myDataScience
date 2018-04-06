@@ -112,7 +112,7 @@ if __name__ == '__main__':
         plt.show()
 
         Y = Y.reshape(Y.shape[0], 1)
-        perceptron_test = ml_model.myPerceptron(num_epochs=10, learning_rate=0.1)
+        perceptron_test = ml_model.myPerceptron(num_epochs=10, learning_rate=0.1, shuffle=True)
         perceptron_test.fit(X, Y)
 
         Y_hat = perceptron_test.predict(X, addBias=True)
@@ -133,7 +133,6 @@ if __name__ == '__main__':
         plt.legend(loc='upper left')
         plt.tight_layout()
         plt.show()
-
 
         del perceptron_test        
         

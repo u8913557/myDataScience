@@ -209,7 +209,7 @@ class myAdaline(ml_model):
 
         # Add one bias term
         if(addBias==True):
-            ones = np.ones((X_test.shape[0], 1))
+            ones = np.ones((X_data.shape[0], 1))
             X_data = np.concatenate((ones, X_data), axis=1)
         
         z = self.net_input(X_data)
