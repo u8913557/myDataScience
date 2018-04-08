@@ -114,7 +114,6 @@ def get_Iris(multi=False):
         #print("iris_df:", iris_df)
 
         y = iris_df.iloc[:, 2].values
-        y = np.where((y==selected_lables[0]), 1, -1)
         #print("y:", y)
         x = iris_df.iloc[:, [0, 1]].values
         #print("x:", x)
@@ -147,15 +146,16 @@ def get_Wine(multi=False):
     if(multi==False):
         # Make new data frame:random choice 13 features + one y
         indice = np.random.choice([1,13], 2, replace=False)
+        #indice = [1,2]
         selected_features = df_wine.columns[indice]
         print("selected_features:", selected_features)
-        
         indice = np.append(indice, [0])  
         df_wine = df_wine[df_wine.columns[indice]]   
         #print("df_wine:", df_wine)
 
         # Make new data frame:random choice 2 class lables from y (3 class lables)
         indice = np.random.choice(3, 2, replace=False)
+        #indice = [1,2]
         selected_lables = lables[indice]
         print("selected_lables:", selected_lables)
 
@@ -164,7 +164,6 @@ def get_Wine(multi=False):
         #print("df_wine:", df_wine)
 
         y = df_wine.iloc[:, 2].values
-        y = np.where((y==selected_lables[0]), 1, -1)
         #print("y:", y)
         x = df_wine.iloc[:, [0, 1]].values
         #print("x:", x)
