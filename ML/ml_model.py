@@ -86,6 +86,8 @@ class ml_model(object):
 
         self.Y = Y
 
+        #print("X_train:", X_train)
+
         if(standardize==True):
             X_std = np.copy(X_train) 
             for i in range(self.D):
@@ -96,23 +98,21 @@ class ml_model(object):
         else:
             self.X_train = np.copy(X_train)
 
+        #print("X_train_std:", self.X_train)
+
         if (self.shuffle==True):
             #init w_ as random numbers
-            self.w_ = np.random.randn(1 + self.D, 1)
+            self.w_ = np.random.randn(1 + self.D)
 
             #shuffle X_train, Y
-            r = np.random.permutation(self.N)
-            self.X_train = self.X_train[r]
-            self.Y = self.Y[r]
+            #r = np.random.permutation(self.N)
+            #self.X_train = self.X_train[r]
+            #self.Y = self.Y[r]
 
         else:
             # init w_ as zeros with w0
-            self.w_ = np.zeros((1 + self.D, 1))        
-
-        # Add one bias term
-        ones = np.ones((self.N, 1))
-        self.X_train = np.concatenate((ones, self.X_train), axis=1)
-        
+            self.w_ = np.zeros((1 + self.D))        
+      
         print("shape of X_train:", self.X_train.shape)
         print("shape of w_:", self.w_.shape)
         print("shape of Y:", self.Y.shape)
@@ -130,8 +130,8 @@ class ml_model(object):
         # net input: w0x0 + w1x1... + wixi
         #print("net_input:")
         #print("shape of X_data:", X_data.shape)
-        #print("shape of w_:", self.w_.shape)
-        return np.dot(X_data, self.w_)
+        #print("shape of self.w_[1:]:", self.w_[1:].shape)
+        return np.dot(X_data, self.w_[1:]) + self.w_[0]
 
     def predict(self):
         pass
@@ -141,8 +141,8 @@ class ml_model(object):
         d2 = Y - Y.mean()
         #print("Shape of d1:", d1.shape)
         #print("Shape of d2:", d2.shape)
-        r2 = 1 - (d1.T.dot(d1) / d2.T.dot(d2))
-        print("R2:", r2[0][0])
+        r2 = 1 - (d1.dot(d1) / d2.dot(d2))
+        print("R2:", r2)
 
     def score(self, Y, Y_hat):
         print('Misclassified samples: %d' % (Y != Y_hat).sum())
@@ -170,21 +170,15 @@ class myPerceptron(ml_model):
         
         self.errors_ = []
         for epoch in range(self.num_epochs):
-            if (0):
-                Y_hat = self.predict(self.X_train)
-                error = self.Y - Y_hat                
-                delta_w = self.learning_rate * np.dot(self.X_train.T, error)
-                self.w_ += delta_w
-                self.errors_.append(error.mean())
-            else :
-                errors = 0
-                for xi, y in zip(self.X_train, Y):
-                    y_hat = self.predict(xi)          
-                    error = y - y_hat
-                    delta_w = self.learning_rate * np.dot(xi.reshape(xi.shape[0], 1), error.reshape(error.shape[0],1))
-                    self.w_ += delta_w
-                    errors += int(error != 0.0)
-                self.errors_.append(errors)
+            errors = 0
+            for xi, y in zip(self.X_train, Y):
+                y_hat = self.predict(xi)
+                error = y - y_hat
+                update = self.learning_rate * error
+                self.w_[1:] += update * xi
+                self.w_[0] += update
+                errors += int(error != 0.0)
+            self.errors_.append(errors)
               
         print("final w:\n", self.w_, "\nepochs:", (epoch+1), "/", self.num_epochs)
         plt.plot(range(1, len(self.errors_) + 1),
@@ -193,16 +187,11 @@ class myPerceptron(ml_model):
         plt.ylabel('Number of erros')
         plt.show()
 
-    def predict(self, X_data, addBias=False, standardize=False):
+    def predict(self, X_data, standardize=False):
         
         if(standardize==True):
             for i in range(self.D):
                 X_data[:,i] = (X_data[:,i] - X_data[:,i].mean()) / X_data[:,i].std()
-
-        # Add one bias term
-        if(addBias==True):
-            ones = np.ones((X_data.shape[0], 1))
-            X_data = np.concatenate((ones, X_data), axis=1)
         
         z = self.net_input(X_data)
         #print("z:",z)
@@ -232,7 +221,7 @@ class myAdaline(ml_model):
             z = self.net_input(self.X_train)
             output = self.activation_fn(z, activation=None)
             error = (self.Y - output)
-            self.w_[1:] += self.learning_rate * np.dot(self.X_train[:, 1:].T, error) 
+            self.w_[1:] += self.learning_rate * np.dot(self.X_train.T, error) 
             self.w_[0] += self.learning_rate * error.sum() 
             cost = (error**2).sum() / 2.0
             self.cost_.append(cost)                      
@@ -246,20 +235,15 @@ class myAdaline(ml_model):
         plt.tight_layout()
         plt.show()
 
-    def predict(self, X_data, addBias=False, standardize=False):
+    def predict(self, X_data, standardize=False):
     
         if(standardize==True):
             for i in range(self.D):
                 X_data[:,i] = (X_data[:,i] - X_data[:,i].mean()) / X_data[:,i].std()
-
-        # Add one bias term
-        if(addBias==True):
-            ones = np.ones((X_data.shape[0], 1))
-            X_data = np.concatenate((ones, X_data), axis=1)
-        
+      
         z = self.net_input(X_data)
-        output = self.activation_fn(z, activation=None)
-        Y_hat = self.activation_fn(output, activation="sign")
+        #output = self.activation_fn(z, activation=None)
+        Y_hat = self.activation_fn(z, activation="sign")
         return Y_hat
 
 
