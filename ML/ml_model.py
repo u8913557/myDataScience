@@ -125,6 +125,8 @@ class ml_model(object):
                 return np.piecewise(z, [z < 0, z >= 0], [-1, 1])
             elif(activation=="step"):
                 return np.piecewise(z, [z < 0, z >= 0], [0, 1])
+            elif(activation =="sigmoid"):
+                return 1.0 / (1.0 + np.exp(-z))
 
     def net_input(self, X_data):
         # net input: w0x0 + w1x1... + wixi
@@ -244,6 +246,56 @@ class myAdaline(ml_model):
         z = self.net_input(X_data)
         #output = self.activation_fn(z, activation=None)
         Y_hat = self.activation_fn(z, activation="sign")
+        return Y_hat
+
+class myLogistic(ml_model):
+  
+    def __init__(self, method=None, learning_rate=0.0001, num_epochs=200, shuffle=True):
+        #print("perceptron: __init__")  
+        super().__init__(method, learning_rate, num_epochs, shuffle)          
+
+    """
+    Parameters
+    ------------
+    X_train : array, float
+        Dataset for traninig
+    Y : array, float
+        "True" Y
+    """
+    def fit(self, X_train, Y, standardize=False):
+        super().fit(X_train, Y, standardize)       
+        
+        cost = 0
+        for epoch in range(self.num_epochs):
+            z = self.net_input(self.X_train)
+            #print("z:", z)
+            output = self.activation_fn(z, activation='sigmoid')
+            # print("Shape of output:", output.shape)
+            #print("output:", output)
+            error = (self.Y - output)
+            self.w_[1:] += self.learning_rate * np.dot(self.X_train.T, error) 
+            self.w_[0] += self.learning_rate * error.sum() 
+            cost = -Y.dot(np.log(output)) - ((1 - Y).dot(np.log(1 - output)))
+            self.cost_.append(cost)                      
+              
+        print("final w:\n", self.w_, "\nFinal cost:\n", cost, "\nepochs:\n", (epoch+1), "/", self.num_epochs)
+
+        plt.plot(range(1, len(self.cost_) + 1), self.cost_, marker='o')
+        plt.xlabel('Epochs')
+        plt.ylabel('Sum-squared-error')
+        plt.title('Adaline - Learning rate: {0}'.format(self.learning_rate))
+        plt.tight_layout()
+        plt.show()
+
+    def predict(self, X_data, standardize=False):
+    
+        if(standardize==True):
+            for i in range(self.D):
+                X_data[:,i] = (X_data[:,i] - X_data[:,i].mean()) / X_data[:,i].std()
+        
+        z = self.net_input(X_data)
+        #output = self.activation_fn(z, activation='sigmoid')
+        Y_hat = self.activation_fn(z, activation="step")
         return Y_hat
 
 
