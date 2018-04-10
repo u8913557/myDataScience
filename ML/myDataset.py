@@ -17,6 +17,7 @@ def get_AndGate():
 
     return X, Y
 
+
 def get_OrGate():
     # Get Data
     X = np.array([
@@ -51,6 +52,7 @@ def get_XorGate(multiData=False):
 
     return X, Y
 
+
 def get_donut():
     N = 200
     R_inner = 5
@@ -84,48 +86,54 @@ def get_Iris(multi=False):
     iris_df = pd.read_csv(abs_file_path, header=None)
     iris_df.columns = ['Sepal length', 'Sepal width', 'Petal length', 'Petal width',
                       'Species']
-    #print(iris_df.head(3))
+    # print(iris_df.head(3))
     lables = np.unique(iris_df['Species'])
-    #print('Class labels', lables)
+    print('Class labels', lables)
 
-    if(multi==False):
-        # Make new data frame:random choice 2 features + one y
+    # Make new data frame:random choice 2 features + one y
+    if(not multi):
         indice = np.random.choice(4, 2, replace=False)
-        selected_features = iris_df.columns[indice]
-        print("selected_features:", selected_features)
-        
-        indice = np.append(indice, [4])
+    else:
+        indice = [range(0,4)]
 
-        # Fixed index for debugging
-        #indice = [0,2,4]
-        iris_df = iris_df[iris_df.columns[indice]]   
-        #print("iris_df:", iris_df)     
-        
-        # Make new data frame:random choice 2 class lables from y (3 class lables)
+    selected_features = iris_df.columns[indice]
+    print("selected_features:", selected_features)
+
+    indice = np.append(indice, [4])
+
+    # Fixed index for debugging
+    # indice = [0,2,4]
+    iris_df = iris_df[iris_df.columns[indice]]   
+    # print("iris_df:", iris_df)
+
+    # Make new data frame:random choice 2 class lables from y (3 class lables)
+    if(not multi):
         indice = np.random.choice(3, 2, replace=False)
+    else:
+        indice = [range(0,3)]
 
-        # Fixed index for debugging
-        #indice = [0,2]
-        selected_lables = lables[indice]
-        print("selected_lables:", selected_lables)
+    # Fixed index for debugging
+    # indice = [0,2]
+    selected_lables = lables[indice]
+    print("selected_lables:", selected_lables)
 
+    if(not multi):
         r = np.where((iris_df['Species']==selected_lables[0]) | (iris_df['Species']==selected_lables[1]))
         iris_df = iris_df.iloc[r]
-        #print("iris_df:", iris_df)
+        # print("iris_df:", iris_df)
 
         y = iris_df.iloc[:, 2].values
-        #print("y:", y)
+        # print("y:", y)
         x = iris_df.iloc[:, [0, 1]].values
-        #print("x:", x)
-
-        return x, y, selected_features, selected_lables
+        # print("x:", x)
     else:
-        # To do: one hot for y ??
-        y = iris_df.iloc[:, 4].values        
-        #print("y:", y)
+        y = iris_df.iloc[:, 4].values
+        # print("y:", y)
         x = iris_df.iloc[:, 0:3].values
-        #print("x:", x)
-        return x, y, iris_df.columns    
+        # print("x:", x)
+
+    return x, y, selected_features, selected_lables
+
 
 def get_Wine(multi=False):
     cur_path = os.path.dirname(__file__)
@@ -141,24 +149,32 @@ def get_Wine(multi=False):
                    'Proline']
     #print(df_wine.head(3))
     lables = np.unique(df_wine['Class label'])
-    #print('Class labels', lables)
+    print('Class labels', lables)
+
+    if(not multi):
+        # Make new data frame:random choice 13 features + one y
+        indice = np.random.choice([1, 13], 2, replace=False)
+        #indice = [1,2]
+    else:
+        indice = [range(1,14)]
+    
+    selected_features = df_wine.columns[indice]
+    print("selected_features:", selected_features)
+    indice = np.append(indice, [0])  
+    df_wine = df_wine[df_wine.columns[indice]]   
+    #print("df_wine:", df_wine)
 
     if(multi==False):
-        # Make new data frame:random choice 13 features + one y
-        indice = np.random.choice([1,13], 2, replace=False)
-        #indice = [1,2]
-        selected_features = df_wine.columns[indice]
-        print("selected_features:", selected_features)
-        indice = np.append(indice, [0])  
-        df_wine = df_wine[df_wine.columns[indice]]   
-        #print("df_wine:", df_wine)
-
         # Make new data frame:random choice 2 class lables from y (3 class lables)
         indice = np.random.choice(3, 2, replace=False)
         #indice = [1,2]
-        selected_lables = lables[indice]
-        print("selected_lables:", selected_lables)
+    else:
+        indice = [range(0,3)]
+    
+    selected_lables = lables[indice]
+    print("selected_lables:", selected_lables)
 
+    if(multi==False):
         r = np.where((df_wine['Class label']==selected_lables[0]) | (df_wine['Class label']==selected_lables[1]))
         df_wine = df_wine.iloc[r]
         #print("df_wine:", df_wine)
@@ -167,12 +183,10 @@ def get_Wine(multi=False):
         #print("y:", y)
         x = df_wine.iloc[:, [0, 1]].values
         #print("x:", x)
-
-        return x, y, selected_features, selected_lables
     else:
-        # To do: one hot for y ??
-        y = df_wine.iloc[:, 0].values        
+        y = df_wine.iloc[:, 13].values
         #print("y:", y)
-        x = df_wine.iloc[:, 1:].values
+        x = df_wine.iloc[:, 0:12].values
         #print("x:", x)
-        return x, y, df_wine.columns 
+
+    return x, y, selected_features, selected_lables   
