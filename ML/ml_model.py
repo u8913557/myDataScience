@@ -148,7 +148,7 @@ class ml_model(object):
 
     def score(self, Y, Y_hat):
         print('Misclassified samples: %d' % (Y != Y_hat).sum())
-        print('Accuracy: %.2f' % accuracy_score(Y, Y_hat))
+        #print('Accuracy: %.2f' % accuracy_score(Y, Y_hat))
         print('Score:', np.mean(Y_hat == Y))
     
 
