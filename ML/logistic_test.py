@@ -49,7 +49,7 @@ if __name__ == '__main__':
         
 
         # Iris Dataset test
-        # print("Iris Dataset test:")
+        print("Iris Dataset test:")
         X, Y, selected_features, selected_lables = get_Iris()
         Y = np.where((Y==selected_lables[0]), 1, 0)
 
