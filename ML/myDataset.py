@@ -177,16 +177,33 @@ def get_Wine(multi=False):
     if(multi==False):
         r = np.where((df_wine['Class label']==selected_lables[0]) | (df_wine['Class label']==selected_lables[1]))
         df_wine = df_wine.iloc[r]
-        #print("df_wine:", df_wine)
+        # print("df_wine:", df_wine)
 
         y = df_wine.iloc[:, 2].values
-        #print("y:", y)
+        # print("y:", y)
         x = df_wine.iloc[:, [0, 1]].values
-        #print("x:", x)
+        # print("x:", x)
     else:
         y = df_wine.iloc[:, 13].values
-        #print("y:", y)
+        # print("y:", y)
         x = df_wine.iloc[:, 0:12].values
-        #print("x:", x)
+        # print("x:", x)
 
-    return x, y, selected_features, selected_lables   
+    return x, y, selected_features, selected_lables
+
+
+def get_MINIST(limit = None):    
+    print("Reading in and transforming data...")
+    cur_path = os.path.dirname(__file__)
+    rel_path = "..\Dataset\MINST.csv"
+    abs_file_path = os.path.join(cur_path, rel_path)
+    df = pd.read_csv(abs_file_path, header=0)
+    #print(df.head(3))
+    data = df.as_matrix()
+    #print(data)
+    np.random.shuffle(data)
+    X = data[:, 1:] / 255.0 # data is from 0..255
+    Y = data[:, 0]
+    if limit is not None:
+        X, Y = X[:limit], Y[:limit]
+    return X, Y
