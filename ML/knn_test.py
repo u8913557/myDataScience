@@ -14,7 +14,7 @@ if __name__ == '__main__':
         plt.scatter(X[Y==1, 0], X[Y==1, 1], color='red', \
                 marker='o', label='Y=1')
         plt.scatter(X[Y==0, 0], X[Y==0, 1], color='blue', \
-                marker='x', label='Y=-1')
+                marker='x', label='Y=0')
         plt.title("Donut test")
         plt.xlabel("X0")
         plt.ylabel("X1")
@@ -32,11 +32,11 @@ if __name__ == '__main__':
         plt.scatter(X[Y==1, 0], X[Y==1, 1], color='red', \
                 marker='^', label='Y=1')
         plt.scatter(X[Y==0, 0], X[Y==0, 1], color='blue', \
-                marker='x', label='Y=-1')
+                marker='x', label='Y=0')
         plt.scatter(X[Y_hat==1, 0], X[Y_hat==1, 1], color='pink', \
                 marker='+', label="Y_hat=1")
         plt.scatter(X[Y_hat==0, 0], X[Y_hat==0, 1], color='green', \
-                marker='>', label="Y_hat=-1")
+                marker='>', label="Y_hat=0")
         
         plt.title("Donut Dataset Predict result")
         plt.xlabel("X0")
@@ -83,4 +83,18 @@ if __name__ == '__main__':
         knn_test.score(y_test, Y_hat)
 
         del knn_test
+
+        # MINIST Dataset
+        print("MINIST Dataset:")
+        X, Y = get_MINIST(limit=20000)
+
+        X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3, random_state=0)        
+
+        knn_test = ml_model.myKNN(K=3)
+        knn_test.fit(X_train, y_train)
+        Y_hat = knn_test.predict(X_test)
+        knn_test.r2_evl(y_test, Y_hat)
+        knn_test.score(y_test, Y_hat)
+        del knn_test
+
         
