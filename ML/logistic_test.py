@@ -114,11 +114,7 @@ if __name__ == '__main__':
 
         # Prepare Data for training / testing
         X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3, random_state=0)
-
-        X_train = X
-        X_test = X
-        y_train = Y
-        y_test = Y
+        
         logistic_test = ml_model.myLogistic(num_epochs=1000, learning_rate=0.05, shuffle=True)
         logistic_test.fit(X_train, y_train, standardize=True)
       
