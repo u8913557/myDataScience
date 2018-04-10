@@ -3,6 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 from sklearn.metrics import accuracy_score
+from sortedcontainers import SortedList
+import math
 
 
 def plot_decision_regions(X, y, classifier, test_idx=None, resolution=0.02):
@@ -298,9 +300,53 @@ class myLogistic(ml_model):
         Y_hat = self.activation_fn(z, activation="step")
         return Y_hat
 
+class myKNN(ml_model):
+  
+    def __init__(self, K):
+        self.K = K
 
-        
+    """
+    Parameters
+    ------------
+    X_train : array, float
+        Dataset for traninig
+    Y : array, float
+        "True" Y
+    """
+    def fit(self, X_train, Y):
+        self.X_train = X_train
+        self.Y = Y
+        #print("self.Y:", self.Y)
+        #print("self.X_train:", self.X_train)    
 
+    def predict(self, X_test):
+        Y_pred = np.zeros((X_test.shape[0]))
+        #print("X_test:", X_test)   
+        for i, xi_test in enumerate(X_test):
+            sl = SortedList()
+            for j, xi_train in enumerate(self.X_train):
+                diff = xi_test - xi_train
+                dist = math.sqrt(diff.dot(diff))
+                
+                if(len(sl) < self.K):
+                    sl.add((dist, self.Y[j]))
+                else:
+                    if(dist < sl[-1][0]):
+                        del sl[-1]
+                        sl.add((dist, self.Y[j]))
+            #print("sl:", sl)
 
+            # vote
+            votes = {}
 
-
+            for _, v in sl:
+                #print("v:", v)
+                votes[v] = votes.get(v,0) + 1
+            max_votes = 0
+            max_votes_class = -1
+            for v,count in votes.items():
+                if count > max_votes:
+                    max_votes = count
+                    max_votes_class = v
+            Y_pred[i] = max_votes_class
+        return Y_pred
