@@ -2,7 +2,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
-from sklearn.metrics import accuracy_score
+# from sklearn.metrics import accuracy_score
 from sortedcontainers import SortedList
 import math
 
@@ -26,18 +26,19 @@ def plot_decision_regions(X, y, classifier, test_idx=None, resolution=0.02):
     plt.ylim(xx2.min(), xx2.max())
 
     for idx, cl in enumerate(np.unique(y)):
-        plt.scatter(x=X[y == cl, 0], 
+        plt.scatter(x=X[y == cl, 0],
                     y=X[y == cl, 1],
-                    alpha=0.8, 
+                    alpha=0.8,
                     c=colors[idx],
-                    marker=markers[idx], 
-                    label=cl, 
+                    marker=markers[idx],
+                    label=cl,
                     edgecolor='black')
 
     # highlight test samples
     if test_idx:
         # plot all samples
-        X_test, y_test = X[test_idx, :], y[test_idx]
+        # X_test, y_test = X[test_idx, :], y[test_idx]
+        X_test = X[test_idx, :]
 
         plt.scatter(X_test[:, 0],
                     X_test[:, 1],
@@ -46,7 +47,7 @@ def plot_decision_regions(X, y, classifier, test_idx=None, resolution=0.02):
                     alpha=1.0,
                     linewidth=1,
                     marker='o',
-                    s=100, 
+                    s=100,
                     label='test set')
 
 
@@ -77,64 +78,63 @@ class ml_model(object):
         self.shuffle = shuffle
         self.w_ = []
         self.cost_ = []
-        #print("ml_model: __init__")
-
+        # print("ml_model: __init__")
 
     def fit(self, X_train, Y, standardize=False):
 
         # Dimensions, Features of X_Train
         self.N, self.D = X_train.shape
-        print("X_train has {0} samples with {1} features".format(self.N, self.D))     
+        print("X_train has {0} samples with {1} features".format(self.N, self.D))
 
         self.Y = Y
 
-        #print("X_train:", X_train)
+        # print("X_train:", X_train)
 
-        if(standardize==True):
-            X_std = np.copy(X_train) 
+        if(standardize is True):
+            X_std = np.copy(X_train)
             for i in range(self.D):
-                X_std[:,i] = (X_train[:,i] - X_train[:,i].mean()) / X_train[:,i].std()
+                X_std[:, i] = (X_train[:, i] - X_train[:, i].mean()) / X_train[:, i].std()
 
             self.X_train = np.copy(X_std)
 
         else:
             self.X_train = np.copy(X_train)
 
-        #print("X_train_std:", self.X_train)
+        # print("X_train_std:", self.X_train)
 
-        if (self.shuffle==True):
-            #init w_ as random numbers
+        if (self.shuffle is True):
+            # init w_ as random numbers
             self.w_ = np.random.randn(1 + self.D)
 
-            #shuffle X_train, Y
-            #r = np.random.permutation(self.N)
-            #self.X_train = self.X_train[r]
-            #self.Y = self.Y[r]
+            # shuffle X_train, Y
+            # r = np.random.permutation(self.N)
+            # self.X_train = self.X_train[r]
+            # self.Y = self.Y[r]
 
         else:
             # init w_ as zeros with w0
-            self.w_ = np.zeros((1 + self.D))        
-      
+            self.w_ = np.zeros((1 + self.D))
+
         print("shape of X_train:", self.X_train.shape)
         print("shape of w_:", self.w_.shape)
         print("shape of Y:", self.Y.shape)
 
     def activation_fn(self, z, activation=None):
 
-            if(activation==None):
+            if(activation is None):
                 return z
-            elif(activation=="sign"):
+            elif(activation == "sign"):
                 return np.piecewise(z, [z < 0, z >= 0], [-1, 1])
-            elif(activation=="step"):
+            elif(activation == "step"):
                 return np.piecewise(z, [z < 0, z >= 0], [0, 1])
-            elif(activation =="sigmoid"):
+            elif(activation == "sigmoid"):
                 return 1.0 / (1.0 + np.exp(-z))
 
     def net_input(self, X_data):
         # net input: w0x0 + w1x1... + wixi
-        #print("net_input:")
-        #print("shape of X_data:", X_data.shape)
-        #print("shape of self.w_[1:]:", self.w_[1:].shape)
+        # print("net_input:")
+        # print("shape of X_data:", X_data.shape)
+        # print("shape of self.w_[1:]:", self.w_[1:].shape)
         return np.dot(X_data, self.w_[1:]) + self.w_[0]
 
     def predict(self):
@@ -143,23 +143,23 @@ class ml_model(object):
     def r2_evl(self, Y, Y_hat):
         d1 = Y - Y_hat
         d2 = Y - Y.mean()
-        #print("Shape of d1:", d1.shape)
-        #print("Shape of d2:", d2.shape)
+        # print("Shape of d1:", d1.shape)
+        # print("Shape of d2:", d2.shape)
         r2 = 1 - (d1.dot(d1) / d2.dot(d2))
         print("R2:", r2)
 
     def score(self, Y, Y_hat):
         print('Misclassified samples: %d' % (Y != Y_hat).sum())
-        #print('Accuracy: %.2f' % accuracy_score(Y, Y_hat))
+        # print('Accuracy: %.2f' % accuracy_score(Y, Y_hat))
         print('Score:', np.mean(Y_hat == Y))
-    
+
 
 class myPerceptron(ml_model):
-  
+
     def __init__(self, method=None, learning_rate=0.01, num_epochs=100, shuffle=True, activation="sign"):
-        #print("perceptron: __init__")  
+        # print("myPerceptron: __init__")
         super().__init__(method, learning_rate, num_epochs, shuffle)
-        self.activation = activation          
+        self.activation = activation
 
     """
     Parameters
@@ -170,8 +170,7 @@ class myPerceptron(ml_model):
         "True" Y
     """
     def fit(self, X_train, Y, standardize=False):
-        super().fit(X_train, Y, standardize)       
-        
+        super().fit(X_train, Y, standardize)
         self.errors_ = []
         for epoch in range(self.num_epochs):
             errors = 0
@@ -183,25 +182,26 @@ class myPerceptron(ml_model):
                 self.w_[0] += update
                 errors += int(error != 0.0)
             self.errors_.append(errors)
-              
+
         print("final w:\n", self.w_, "\nepochs:", (epoch+1), "/", self.num_epochs)
         plt.plot(range(1, len(self.errors_) + 1),
-                self.errors_, marker='o')
+                 self.errors_, marker='o')
         plt.xlabel('Epochs')
         plt.ylabel('Number of erros')
         plt.show()
 
     def predict(self, X_data, standardize=False):
-        
-        if(standardize==True):
+
+        if(standardize is True):
             for i in range(self.D):
-                X_data[:,i] = (X_data[:,i] - X_data[:,i].mean()) / X_data[:,i].std()
-        
+                X_data[:, i] = (X_data[:, i] - X_data[:, i].mean()) / X_data[:, i].std()
+
         z = self.net_input(X_data)
-        #print("z:",z)
+        # print("z:",z)
         Y_hat = self.activation_fn(z, self.activation)
-        #print("Y_hat:",Y_hat)
+        # print("Y_hat:",Y_hat)
         return Y_hat
+
 
 class myAdaline(ml_model):
   
@@ -218,8 +218,7 @@ class myAdaline(ml_model):
         "True" Y
     """
     def fit(self, X_train, Y, standardize=False):
-        super().fit(X_train, Y, standardize)       
-        
+        super().fit(X_train, Y, standardize)
         cost = 0
         for epoch in range(self.num_epochs):
             z = self.net_input(self.X_train)
@@ -240,21 +239,22 @@ class myAdaline(ml_model):
         plt.show()
 
     def predict(self, X_data, standardize=False):
-    
-        if(standardize==True):
+
+        if(standardize is True):
             for i in range(self.D):
-                X_data[:,i] = (X_data[:,i] - X_data[:,i].mean()) / X_data[:,i].std()
-      
+                X_data[:, i] = (X_data[:, i] - X_data[:, i].mean()) / X_data[:, i].std()
+
         z = self.net_input(X_data)
-        #output = self.activation_fn(z, activation=None)
+        # output = self.activation_fn(z, activation=None)
         Y_hat = self.activation_fn(z, activation="sign")
         return Y_hat
 
+
 class myLogistic(ml_model):
-  
+
     def __init__(self, method=None, learning_rate=0.0001, num_epochs=200, shuffle=True):
-        #print("perceptron: __init__")  
-        super().__init__(method, learning_rate, num_epochs, shuffle)          
+        # print("myLogistic: __init__")
+        super().__init__(method, learning_rate, num_epochs, shuffle)
 
     """
     Parameters
@@ -265,21 +265,20 @@ class myLogistic(ml_model):
         "True" Y
     """
     def fit(self, X_train, Y, standardize=False):
-        super().fit(X_train, Y, standardize)       
-        
+        super().fit(X_train, Y, standardize)
         cost = 0
         for epoch in range(self.num_epochs):
             z = self.net_input(self.X_train)
-            #print("z:", z)
+            # print("z:", z)
             output = self.activation_fn(z, activation='sigmoid')
             # print("Shape of output:", output.shape)
-            #print("output:", output)
+            # print("output:", output)
             error = (self.Y - output)
-            self.w_[1:] += self.learning_rate * np.dot(self.X_train.T, error) 
-            self.w_[0] += self.learning_rate * error.sum() 
+            self.w_[1:] += self.learning_rate * np.dot(self.X_train.T, error)
+            self.w_[0] += self.learning_rate * error.sum()
             cost = -Y.dot(np.log(output)) - ((1 - Y).dot(np.log(1 - output)))
-            self.cost_.append(cost)                      
-              
+            self.cost_.append(cost)
+
         print("final w:\n", self.w_, "\nFinal cost:\n", cost, "\nepochs:\n", (epoch+1), "/", self.num_epochs)
 
         plt.plot(range(1, len(self.cost_) + 1), self.cost_, marker='o')
@@ -290,18 +289,17 @@ class myLogistic(ml_model):
         plt.show()
 
     def predict(self, X_data, standardize=False):
-    
-        if(standardize==True):
+        if(standardize is True):
             for i in range(self.D):
-                X_data[:,i] = (X_data[:,i] - X_data[:,i].mean()) / X_data[:,i].std()
-        
+                X_data[:, i] = (X_data[:, i] - X_data[:, i].mean()) / X_data[:, i].std()
         z = self.net_input(X_data)
-        #output = self.activation_fn(z, activation='sigmoid')
+        # output = self.activation_fn(z, activation='sigmoid')
         Y_hat = self.activation_fn(z, activation="step")
         return Y_hat
 
+
 class myKNN(ml_model):
-  
+
     def __init__(self, K):
         self.K = K
 
@@ -316,35 +314,34 @@ class myKNN(ml_model):
     def fit(self, X_train, Y):
         self.X_train = X_train
         self.Y = Y
-        #print("self.Y:", self.Y)
-        #print("self.X_train:", self.X_train)    
+        # print("self.Y:", self.Y)
+        # print("self.X_train:", self.X_train)
 
     def predict(self, X_test):
         Y_pred = np.zeros((X_test.shape[0]))
-        #print("X_test:", X_test)   
+        # print("X_test:", X_test)
         for i, xi_test in enumerate(X_test):
             sl = SortedList()
             for j, xi_train in enumerate(self.X_train):
                 diff = xi_test - xi_train
                 dist = math.sqrt(diff.dot(diff))
-                
                 if(len(sl) < self.K):
                     sl.add((dist, self.Y[j]))
                 else:
                     if(dist < sl[-1][0]):
                         del sl[-1]
                         sl.add((dist, self.Y[j]))
-            #print("sl:", sl)
+            # print("sl:", sl)
 
             # vote
             votes = {}
 
             for _, v in sl:
-                #print("v:", v)
-                votes[v] = votes.get(v,0) + 1
+                # print("v:", v)
+                votes[v] = votes.get(v, 0) + 1
             max_votes = 0
             max_votes_class = -1
-            for v,count in votes.items():
+            for v, count in votes.items():
                 if count > max_votes:
                     max_votes = count
                     max_votes_class = v
