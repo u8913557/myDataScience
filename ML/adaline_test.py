@@ -71,7 +71,7 @@ if __name__ == '__main__':
         # Prepare Data for training / testing
 
         X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3, random_state=0)
-        adaline_test = ml_model.myAdaline(num_epochs=15, learning_rate=0.01, shuffle=True)
+        adaline_test = ml_model.myAdaline(num_epochs=15, learning_rate=0.01, shuffle=True, mini_batch=False)
         adaline_test.fit(X_train, y_train, standardize=True)
 
         Y_hat = adaline_test.predict(X_test, standardize=True)
@@ -117,7 +117,8 @@ if __name__ == '__main__':
         # Prepare Data for training / testing
         X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3, random_state=0)
 
-        adaline_test = ml_model.myAdaline(num_epochs=10, learning_rate=0.01, shuffle=True)
+        adaline_test = ml_model.myAdaline(num_epochs=10, learning_rate=0.01,
+                                          shuffle=True, mini_batch=False)
         adaline_test.fit(X_train, y_train, standardize=True)
 
         Y_hat = adaline_test.predict(X_test, standardize=True)

@@ -204,10 +204,11 @@ class myPerceptron(ml_model):
 
 
 class myAdaline(ml_model):
-  
-    def __init__(self, method=None, learning_rate=0.0001, num_epochs=200, shuffle=True):
-        #print("perceptron: __init__")  
-        super().__init__(method, learning_rate, num_epochs, shuffle)          
+
+    def __init__(self, method=None, learning_rate=0.0001, num_epochs=200, shuffle=True, mini_batch=False):
+        # print("myAdaline: __init__")
+        super().__init__(method, learning_rate, num_epochs, shuffle)
+        self.mini_batch = mini_batch
 
     """
     Parameters
@@ -217,19 +218,39 @@ class myAdaline(ml_model):
     Y : array, float
         "True" Y
     """
+    def _update_weights(self, xi, target):
+        """Apply Adaline learning rule to update the weights"""
+        output = self.activation_fn(self.net_input(xi), activation=None)
+        error = (target - output)
+        self.w_[1:] += self.learning_rate * xi.dot(error)
+        self.w_[0] += self.learning_rate * error
+        cost = 0.5 * error**2
+        return cost
+
     def fit(self, X_train, Y, standardize=False):
         super().fit(X_train, Y, standardize)
         cost = 0
+        avg_cost = 0
         for epoch in range(self.num_epochs):
-            z = self.net_input(self.X_train)
-            output = self.activation_fn(z, activation=None)
-            error = (self.Y - output)
-            self.w_[1:] += self.learning_rate * np.dot(self.X_train.T, error) 
-            self.w_[0] += self.learning_rate * error.sum() 
-            cost = (error**2).sum() / 2.0
-            self.cost_.append(cost)                      
-              
-        print("final w:\n", self.w_, "\nFinal cost:\n", cost, "\nepochs:\n", (epoch+1), "/", self.num_epochs)
+            if(self.mini_batch is False):
+                z = self.net_input(self.X_train)
+                output = self.activation_fn(z, activation=None)
+                error = (self.Y - output)
+                self.w_[1:] += self.learning_rate * np.dot(self.X_train.T, error)
+                self.w_[0] += self.learning_rate * error.sum()
+                cost = (error**2).sum() / 2.0
+                self.cost_.append(cost)
+            else:
+                cost = []
+                for xi, target in zip(X_train, Y):
+                    cost.append(self._update_weights(xi, target))
+                avg_cost = sum(cost) / len(Y)
+                self.cost_.append(avg_cost)
+
+        if(self.mini_batch is False):
+            print("final w:\n", self.w_, "\nFinal cost:\n", cost, "\nepochs:\n", (epoch+1), "/", self.num_epochs)
+        else:
+            print("final w:\n", self.w_, "\nFinal cost:\n", avg_cost, "\nepochs:\n", (epoch+1), "/", self.num_epochs)
 
         plt.plot(range(1, len(self.cost_) + 1), self.cost_, marker='o')
         plt.xlabel('Epochs')
@@ -237,6 +258,15 @@ class myAdaline(ml_model):
         plt.title('Adaline - Learning rate: {0}'.format(self.learning_rate))
         plt.tight_layout()
         plt.show()
+
+    def partial_fit(self, X_train, Y):
+        """Fit training data without reinitializing the weights"""
+        if Y.ravel().shape[0] > 1:
+            for xi, target in zip(X_train, Y):
+                self._update_weights(xi, target)
+        else:
+            self._update_weights(X_train, Y)
+        return self
 
     def predict(self, X_data, standardize=False):
 
