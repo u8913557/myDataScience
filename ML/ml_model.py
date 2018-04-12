@@ -222,6 +222,8 @@ class myAdaline(ml_model):
         """Apply Adaline learning rule to update the weights"""
         output = self.activation_fn(self.net_input(xi), activation=None)
         error = (target - output)
+        # print("shape of xi:", xi.shape)
+        # print("shape of error:", error.shape)
         self.w_[1:] += self.learning_rate * xi.dot(error)
         self.w_[0] += self.learning_rate * error
         cost = 0.5 * error**2
