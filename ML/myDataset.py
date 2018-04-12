@@ -193,10 +193,10 @@ def get_Wine(multi=False):
     return x, y, selected_features, selected_lables
 
 
-def get_MINIST(limit=None):
+def get_MNIST(limit=None):
     print("Reading in and transforming data...")
     cur_path = os.path.dirname(__file__)
-    rel_path = "..\\Dataset\\MINST.csv"
+    rel_path = "..\\Dataset\\MNIST.csv"
     abs_file_path = os.path.join(cur_path, rel_path)
     df = pd.read_csv(abs_file_path, header=0)
     # print(df.head(3))
