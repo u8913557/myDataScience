@@ -40,7 +40,7 @@ if __name__ == '__main__':
     plt.tight_layout()
     plt.show()
 
-    title = "Learning Curves (Perceptron)"
+    title = "Learning Curves (Logistic)"
     cv = ShuffleSplit(n_splits=100, test_size=0.2, random_state=0)
     estimator = logistic
     plot_learning_curve(estimator, X, Y, title, cv=cv, n_jobs=4)
@@ -123,7 +123,7 @@ if __name__ == '__main__':
     plt.tight_layout()
     plt.show()
 
-    title = "Learning Curves (Perceptron)"
+    title = "Learning Curves (Logistic)"
     cv = ShuffleSplit(n_splits=100, test_size=0.2, random_state=0)
     estimator = logistic
     plot_learning_curve(estimator, X, Y, title, cv=cv, n_jobs=4)
