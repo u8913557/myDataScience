@@ -4,6 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.model_selection import ShuffleSplit
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import Perceptron
+from sklearn.linear_model import SGDClassifier
 from sklearn.metrics import accuracy_score
 from ml_model import plot_decision_regions
 import matplotlib.pyplot as plt
@@ -83,6 +84,29 @@ if __name__ == '__main__':
     plt.show()
 
     title = "Learning Curves (Perceptron)"
+    cv = ShuffleSplit(n_splits=100, test_size=0.2, random_state=0)
+    estimator = ppn
+    plot_learning_curve(estimator, X, Y, title, cv=cv, n_jobs=4)
+    plt.show()
+
+    del ppn
+
+    ppn = SGDClassifier(loss='perceptron', max_iter=1000)
+    ppn.fit(X_train_std, Y_train)
+    Y_hat = ppn.predict(X_test_std)
+    print('Good classified samples: %d' % (accuracy_score(Y_test, Y_hat, normalize=False)))
+    print('Misclassified samples: %d' % (Y_test != Y_hat).sum())
+    print('Accuracy: %.2f' % accuracy_score(Y_test, Y_hat))
+    print('Accuracy: %.2f' % ppn.score(X_test_std, Y_test))
+
+    plot_decision_regions(X=X_test_std, y=Y_test, classifier=ppn)
+    plt.xlabel('X0 [standardized]')
+    plt.ylabel('X1 [standardized]')
+    plt.legend(loc='upper left')
+    plt.tight_layout()
+    plt.show()
+
+    title = "Learning Curves (SGD Perceptron)"
     cv = ShuffleSplit(n_splits=100, test_size=0.2, random_state=0)
     estimator = ppn
     plot_learning_curve(estimator, X, Y, title, cv=cv, n_jobs=4)

@@ -8,6 +8,7 @@ from sklearn.metrics import accuracy_score
 from ml_model import plot_decision_regions
 import matplotlib.pyplot as plt
 from scikitplot.estimators import plot_learning_curve
+from sklearn.linear_model import SGDClassifier
 
 
 if __name__ == '__main__':
@@ -82,7 +83,30 @@ if __name__ == '__main__':
     plt.tight_layout()
     plt.show()
 
-    title = "Learning Curves (Perceptron)"
+    title = "Learning Curves (Logistic)"
+    cv = ShuffleSplit(n_splits=100, test_size=0.2, random_state=0)
+    estimator = logistic
+    plot_learning_curve(estimator, X, Y, title, cv=cv, n_jobs=4)
+    plt.show()
+
+    del logistic
+
+    logistic = SGDClassifier(loss='log', max_iter=1000)
+    logistic.fit(X_train_std, Y_train)
+    Y_hat = logistic.predict(X_test_std)
+    print('Good classified samples: %d' % (accuracy_score(Y_test, Y_hat, normalize=False)))
+    print('Misclassified samples: %d' % (Y_test != Y_hat).sum())
+    print('Accuracy: %.2f' % accuracy_score(Y_test, Y_hat))
+    print('Accuracy: %.2f' % logistic.score(X_test_std, Y_test))
+
+    plot_decision_regions(X=X_test_std, y=Y_test, classifier=logistic)
+    plt.xlabel('X0 [standardized]')
+    plt.ylabel('X1 [standardized]')
+    plt.legend(loc='upper left')
+    plt.tight_layout()
+    plt.show()
+
+    title = "Learning Curves (SGD Logistic)"
     cv = ShuffleSplit(n_splits=100, test_size=0.2, random_state=0)
     estimator = logistic
     plot_learning_curve(estimator, X, Y, title, cv=cv, n_jobs=4)
