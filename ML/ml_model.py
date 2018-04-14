@@ -71,7 +71,8 @@ class ml_model(object):
     errors_ : list, float
     """
 
-    def __init__(self, method=None, learning_rate=0.01, num_epochs=100, shuffle=None):
+    def __init__(self, method=None, learning_rate=0.01,
+                 num_epochs=100, shuffle=None):
         self.method = method
         self.learning_rate = learning_rate
         self.num_epochs = num_epochs
@@ -84,7 +85,8 @@ class ml_model(object):
 
         # Dimensions, Features of X_Train
         self.N, self.D = X_train.shape
-        print("X_train has {0} samples with {1} features".format(self.N, self.D))
+        print("X_train has {0} samples with {1} \
+            features".format(self.N, self.D))
 
         self.Y = Y
 
@@ -93,7 +95,8 @@ class ml_model(object):
         if(standardize is True):
             X_std = np.copy(X_train)
             for i in range(self.D):
-                X_std[:, i] = (X_train[:, i] - X_train[:, i].mean()) / X_train[:, i].std()
+                X_std[:, i] = \
+                    (X_train[:, i] - X_train[:, i].mean()) / X_train[:, i].std()
 
             self.X_train = np.copy(X_std)
 
@@ -156,7 +159,8 @@ class ml_model(object):
 
 class myPerceptron(ml_model):
 
-    def __init__(self, method=None, learning_rate=0.01, num_epochs=100, shuffle=True, activation="sign"):
+    def __init__(self, method=None, learning_rate=0.01,
+                 num_epochs=100, shuffle=True, activation="sign"):
         # print("myPerceptron: __init__")
         super().__init__(method, learning_rate, num_epochs, shuffle)
         self.activation = activation
@@ -183,7 +187,8 @@ class myPerceptron(ml_model):
                 errors += int(error != 0.0)
             self.errors_.append(errors)
 
-        print("final w:\n", self.w_, "\nepochs:", (epoch+1), "/", self.num_epochs)
+        print("final w:\n", self.w_, "\nepochs:",
+              (epoch+1), "/", self.num_epochs)
         plt.plot(range(1, len(self.errors_) + 1),
                  self.errors_, marker='o')
         plt.xlabel('Epochs')
@@ -194,7 +199,8 @@ class myPerceptron(ml_model):
 
         if(standardize is True):
             for i in range(self.D):
-                X_data[:, i] = (X_data[:, i] - X_data[:, i].mean()) / X_data[:, i].std()
+                X_data[:, i] = \
+                 (X_data[:, i] - X_data[:, i].mean()) / X_data[:, i].std()
 
         z = self.net_input(X_data)
         # print("z:",z)
@@ -205,7 +211,8 @@ class myPerceptron(ml_model):
 
 class myAdaline(ml_model):
 
-    def __init__(self, method=None, learning_rate=0.0001, num_epochs=200, shuffle=True, mini_batch=False):
+    def __init__(self, method=None, learning_rate=0.0001,
+                 num_epochs=200, shuffle=True, mini_batch=False):
         # print("myAdaline: __init__")
         super().__init__(method, learning_rate, num_epochs, shuffle)
         self.mini_batch = mini_batch
@@ -238,7 +245,8 @@ class myAdaline(ml_model):
                 z = self.net_input(self.X_train)
                 output = self.activation_fn(z, activation=None)
                 error = (self.Y - output)
-                self.w_[1:] += self.learning_rate * np.dot(self.X_train.T, error)
+                self.w_[1:] += self.learning_rate * \
+                    np.dot(self.X_train.T, error)
                 self.w_[0] += self.learning_rate * error.sum()
                 cost = (error**2).sum() / 2.0
                 self.cost_.append(cost)
@@ -250,9 +258,11 @@ class myAdaline(ml_model):
                 self.cost_.append(avg_cost)
 
         if(self.mini_batch is False):
-            print("final w:\n", self.w_, "\nFinal cost:\n", cost, "\nepochs:\n", (epoch+1), "/", self.num_epochs)
+            print("final w:\n", self.w_, "\nFinal cost:\n", cost,
+                  "\nepochs:\n", (epoch+1), "/", self.num_epochs)
         else:
-            print("final w:\n", self.w_, "\nFinal cost:\n", avg_cost, "\nepochs:\n", (epoch+1), "/", self.num_epochs)
+            print("final w:\n", self.w_, "\nFinal cost:\n", avg_cost,
+                  "\nepochs:\n", (epoch+1), "/", self.num_epochs)
 
         plt.plot(range(1, len(self.cost_) + 1), self.cost_, marker='o')
         plt.xlabel('Epochs')
@@ -284,7 +294,8 @@ class myAdaline(ml_model):
 
 class myLogistic(ml_model):
 
-    def __init__(self, method=None, learning_rate=0.0001, num_epochs=200, shuffle=True):
+    def __init__(self, method=None, learning_rate=0.0001,
+                 num_epochs=200, shuffle=True):
         # print("myLogistic: __init__")
         super().__init__(method, learning_rate, num_epochs, shuffle)
 
@@ -311,7 +322,8 @@ class myLogistic(ml_model):
             cost = -Y.dot(np.log(output)) - ((1 - Y).dot(np.log(1 - output)))
             self.cost_.append(cost)
 
-        print("final w:\n", self.w_, "\nFinal cost:\n", cost, "\nepochs:\n", (epoch+1), "/", self.num_epochs)
+        print("final w:\n", self.w_, "\nFinal cost:\n", cost,
+              "\nepochs:\n", (epoch+1), "/", self.num_epochs)
 
         plt.plot(range(1, len(self.cost_) + 1), self.cost_, marker='o')
         plt.xlabel('Epochs')
