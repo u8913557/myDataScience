@@ -93,9 +93,9 @@ if __name__ == '__main__':
 
         del knn_test
 
-        # MINIST Dataset
+        # MNIST Dataset
         print("MNIST Dataset:")
-        X, Y = get_MNIST(limit=20000)
+        X, Y = get_MNIST(limit=2000)
 
         X_train, X_test, y_train, y_test = train_test_split(
                 X, Y, test_size=0.3, random_state=0)
