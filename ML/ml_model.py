@@ -409,7 +409,7 @@ class myNaiveBayes(ml_model):
     Y : array, float
         "True" Y
     """
-    def fit(self, X_train, Y, smoothing=1e-2):
+    def fit(self, X_train, Y, smoothing=1e-2, method='gaussian'):
         self.X_train = X_train
         self.Y = Y
         # print("self.Y:", self.Y)
@@ -418,23 +418,26 @@ class myNaiveBayes(ml_model):
         print("X_train has {0} samples with {1} features".format(
             N, D))
 
-        self.X_train_mean_var_in_Y = {}
-        self.X_train_Prob_in_Y = {}
-        labels = set(Y)
-        self.lable_numbers = len(labels)
+        if method is 'gaussian':
+            self.X_train_mean_var_in_Y = {}
+            self.lable_Prob_in_Y = {}
+            labels = set(Y)
+            self.lable_numbers = len(labels)
 
-        for c in labels:
-            such_X_train = X_train[Y == c]
-            self.X_train_mean_var_in_Y[c] = {
-                "mean": such_X_train.mean(axis=0), 
-                'cov': np.cov(such_X_train.T) + np.eye(D)*smoothing
-            }
-            self.lable_Prob_in_Y[c] = float(len(Y[Y == c])) / len(Y)
+            for c in labels:
+                such_X_train = X_train[Y == c]
+                self.X_train_mean_var_in_Y[c] = {
+                    "mean": such_X_train.mean(axis=0), 
+                    'cov': np.cov(such_X_train.T) + np.eye(D)*smoothing
+                }
+                self.lable_Prob_in_Y[c] = float(len(Y[Y == c])) / len(Y)
 
-        print("len of X_train_mean_var_in_Y:", len(self.X_train_mean_var_in_Y))
-        print("len of X_train_Prob_in_Y:", len(self.X_train_Prob_in_Y))
-        # print("X_train_mean_var_in_Y:", self.X_train_mean_var_in_Y)
-        # print("X_train_Prob_in_Y:", self.X_train_Prob_in_Y)
+            print("len of X_train_mean_var_in_Y:", len(self.X_train_mean_var_in_Y))
+            print("len of X_train_Prob_in_Y:", len(self.lable_Prob_in_Y))
+            # print("X_train_mean_var_in_Y:", self.X_train_mean_var_in_Y)
+            # print("lable_Prob_in_Y:", self.lable_Prob_in_Y)
+        else :
+            pass
 
     def predict(self, X_test):
         N = X_test.shape[0]
