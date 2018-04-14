@@ -27,7 +27,7 @@ if __name__ == '__main__':
     plt.tight_layout()
     plt.show()
 
-    nb_test = ml_model.myNaiveBayes()
+    nb_test = ml_model.myBayes(naive=False, pdf='gaussian')
     nb_test.fit(X, Y)
 
     Y_hat = nb_test.predict(X)
@@ -66,7 +66,7 @@ if __name__ == '__main__':
     # Prepare Data for training / testing
     X_train, X_test, y_train, y_test = train_test_split(
         X, Y, test_size=0.3, random_state=0)
-    nb_test = ml_model.myNaiveBayes()
+    nb_test = ml_model.myBayes(naive=False, pdf='gaussian')
     nb_test.fit(X_train, y_train)
 
     Y_hat = nb_test.predict(X_test)
@@ -85,7 +85,7 @@ if __name__ == '__main__':
     # Prepare Data for training / testing
     X_train, X_test, y_train, y_test = train_test_split(
             X, Y, test_size=0.3, random_state=0)
-    nb_test = ml_model.myNaiveBayes()
+    nb_test = ml_model.myBayes()
     nb_test.fit(X_train, y_train)
 
     Y_hat = nb_test.predict(X_test)
@@ -101,10 +101,9 @@ if __name__ == '__main__':
     X_train, X_test, y_train, y_test = train_test_split(
             X, Y, test_size=0.3, random_state=0)
 
-    nb_test = ml_model.myNaiveBayes()
+    nb_test = ml_model.myBayes(naive=False, pdf='gaussian')
     nb_test.fit(X_train, y_train)
     Y_hat = nb_test.predict(X_test)
     nb_test.r2_evl(y_test, Y_hat)
     nb_test.score(y_test, Y_hat)
     del nb_test
-

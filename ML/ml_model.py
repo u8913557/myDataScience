@@ -396,10 +396,11 @@ class myKNN(ml_model):
         return Y_pred
 
 
-class myNaiveBayes(ml_model):
+class myBayes(ml_model):
 
-    def __init__(self, ):
-        pass
+    def __init__(self, naive=True, pdf='gaussian'):
+        self.naive = naive
+        self.pdf = pdf
 
     """
     Parameters
@@ -409,44 +410,66 @@ class myNaiveBayes(ml_model):
     Y : array, float
         "True" Y
     """
-    def fit(self, X_train, Y, smoothing=1e-2, method='gaussian'):
+    def fit(self, X_train, Y, smoothing=1e-2):
         self.X_train = X_train
         self.Y = Y
+
         # print("self.Y:", self.Y)
         # print("self.X_train:", self.X_train)
         N, D = X_train.shape
         print("X_train has {0} samples with {1} features".format(
             N, D))
 
-        if method is 'gaussian':
-            self.X_train_mean_cov_in_Y = {}
-            self.lable_Prob_in_Y = {}
-            labels = set(Y)
-            self.lable_numbers = len(labels)
+        self.lable_Prob_in_Y = {}
+        labels = set(Y)
+        self.lable_numbers = len(labels)
 
-            for c in labels:
-                such_X_train = X_train[Y == c]
-                self.X_train_mean_cov_in_Y[c] = {
-                    "mean": such_X_train.mean(axis=0), 
-                    'cov': np.cov(such_X_train.T) + np.eye(D)*smoothing
-                }
-                self.lable_Prob_in_Y[c] = float(len(Y[Y == c])) / len(Y)
+        if self.pdf is 'gaussian':
+            if self.naive is True:
+                self.X_train_mean_var_in_Y = {}
+                for c in labels:
+                    such_X_train = X_train[Y == c]
+                    self.X_train_mean_var_in_Y[c] = {
+                        "mean": such_X_train.mean(axis=0),
+                        'var': np.var(such_X_train) + smoothing
+                    }
+                    self.lable_Prob_in_Y[c] = float(len(Y[Y == c])) / len(Y)
 
-            print("len of X_train_mean_var_in_Y:", len(self.X_train_mean_cov_in_Y))
+                print("len of X_train_mean_var_in_Y:", len(self.X_train_mean_var_in_Y))
+                # print("X_train_mean_var_in_Y:", self.X_train_mean_var_in_Y)
+            else:
+                self.X_train_mean_cov_in_Y = {}
+                for c in labels:
+                    such_X_train = X_train[Y == c]
+                    self.X_train_mean_cov_in_Y[c] = {
+                        "mean": such_X_train.mean(axis=0), 
+                        'cov': np.cov(such_X_train.T) + np.eye(D)*smoothing
+                    }
+                    self.lable_Prob_in_Y[c] = float(len(Y[Y == c])) / len(Y)
+
+                print("len of X_train_mean_cov_in_Y:", len(self.X_train_mean_cov_in_Y))
+                # print("X_train_mean_cov_in_Y:", self.X_train_mean_cov_in_Y)
             print("len of X_train_Prob_in_Y:", len(self.lable_Prob_in_Y))
-            # print("X_train_mean_var_in_Y:", self.X_train_mean_cov_in_Y)
             # print("lable_Prob_in_Y:", self.lable_Prob_in_Y)
-        else :
+        else:
             pass
 
     def predict(self, X_test):
         N = X_test.shape[0]
         print("shape of X_test:", X_test.shape)
         Y_pred_P = np.zeros((N, self.lable_numbers))
-        for c, g in self.X_train_mean_var_in_Y.items():
-            mean, cov = g["mean"], g["cov"]
-            # print("c:{0}, g:{1}".format(c, g))
-            Y_pred_P[:, c] = mvn.logpdf(X_test, mean=mean, cov=cov) + np.log(self.lable_Prob_in_Y[c])
+
+        if self.naive is True:
+            for c, g in self.X_train_mean_var_in_Y.items():
+                mean, var = g["mean"], g["var"]    
+                Y_pred_P[:, c] = mvn.logpdf(X_test, mean=mean, cov=var) + np.log(self.lable_Prob_in_Y[c])
+                # print("c:{0}, g:{1}".format(c, g))
+        else:
+            for c, g in self.X_train_mean_cov_in_Y.items():       
+                mean, cov = g["mean"], g["cov"]                
+                Y_pred_P[:, c] = mvn.logpdf(X_test, mean=mean, cov=cov) + np.log(self.lable_Prob_in_Y[c])
+                # print("c:{0}, g:{1}".format(c, g))
+
         # print("Y_pred_P:{0}".format(Y_pred_P))
         Y_pred = np.argmax(Y_pred_P, axis=1)
         return Y_pred
