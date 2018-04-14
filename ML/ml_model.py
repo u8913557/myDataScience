@@ -195,14 +195,14 @@ class myPerceptron(ml_model):
         plt.ylabel('Number of erros')
         plt.show()
 
-    def predict(self, X_data, standardize=False):
-
+    def predict(self, X_test, standardize=False):
+        print("shape of X_test:", X_test.shape)
         if(standardize is True):
             for i in range(self.D):
-                X_data[:, i] = \
-                 (X_data[:, i] - X_data[:, i].mean()) / X_data[:, i].std()
+                X_test[:, i] = \
+                 (X_test[:, i] - X_test[:, i].mean()) / X_test[:, i].std()
 
-        z = self.net_input(X_data)
+        z = self.net_input(X_test)
         # print("z:",z)
         Y_hat = self.activation_fn(z, self.activation)
         # print("Y_hat:",Y_hat)
@@ -280,13 +280,13 @@ class myAdaline(ml_model):
             self._update_weights(X_train, Y)
         return self
 
-    def predict(self, X_data, standardize=False):
-
+    def predict(self, X_test, standardize=False):
+        print("shape of X_test:", X_test.shape)
         if(standardize is True):
             for i in range(self.D):
-                X_data[:, i] = (X_data[:, i] - X_data[:, i].mean()) / X_data[:, i].std()
+                X_test[:, i] = (X_test[:, i] - X_test[:, i].mean()) / X_test[:, i].std()
 
-        z = self.net_input(X_data)
+        z = self.net_input(X_test)
         # output = self.activation_fn(z, activation=None)
         Y_hat = self.activation_fn(z, activation="sign")
         return Y_hat
@@ -332,11 +332,12 @@ class myLogistic(ml_model):
         plt.tight_layout()
         plt.show()
 
-    def predict(self, X_data, standardize=False):
+    def predict(self, X_test, standardize=False):
+        print("shape of X_test:", X_test.shape)
         if(standardize is True):
             for i in range(self.D):
-                X_data[:, i] = (X_data[:, i] - X_data[:, i].mean()) / X_data[:, i].std()
-        z = self.net_input(X_data)
+                X_test[:, i] = (X_test[:, i] - X_test[:, i].mean()) / X_test[:, i].std()
+        z = self.net_input(X_test)
         # output = self.activation_fn(z, activation='sigmoid')
         Y_hat = self.activation_fn(z, activation="step")
         return Y_hat
@@ -362,6 +363,7 @@ class myKNN(ml_model):
         # print("self.X_train:", self.X_train)
 
     def predict(self, X_test):
+        print("shape of X_test:", X_test.shape)
         Y_pred = np.zeros((X_test.shape[0]))
         # print("X_test:", X_test)
         for i, xi_test in enumerate(X_test):
