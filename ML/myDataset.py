@@ -134,7 +134,7 @@ def get_Iris(multi=False):
     else:
         y = iris_df.iloc[:, 4].values
         # print("y:", y)
-        x = iris_df.iloc[:, 0:3].values
+        x = iris_df.iloc[:, 0:4].values
         # print("x:", x)
 
     return x, y, selected_features, selected_lables
@@ -194,7 +194,7 @@ def get_Wine(multi=False):
     else:
         y = df_wine.iloc[:, 13].values
         # print("y:", y)
-        x = df_wine.iloc[:, 0:12].values
+        x = df_wine.iloc[:, 0:13].values
         # print("x:", x)
 
     return x, y, selected_features, selected_lables
