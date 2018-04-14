@@ -419,22 +419,22 @@ class myNaiveBayes(ml_model):
             N, D))
 
         if method is 'gaussian':
-            self.X_train_mean_var_in_Y = {}
+            self.X_train_mean_cov_in_Y = {}
             self.lable_Prob_in_Y = {}
             labels = set(Y)
             self.lable_numbers = len(labels)
 
             for c in labels:
                 such_X_train = X_train[Y == c]
-                self.X_train_mean_var_in_Y[c] = {
+                self.X_train_mean_cov_in_Y[c] = {
                     "mean": such_X_train.mean(axis=0), 
                     'cov': np.cov(such_X_train.T) + np.eye(D)*smoothing
                 }
                 self.lable_Prob_in_Y[c] = float(len(Y[Y == c])) / len(Y)
 
-            print("len of X_train_mean_var_in_Y:", len(self.X_train_mean_var_in_Y))
+            print("len of X_train_mean_var_in_Y:", len(self.X_train_mean_cov_in_Y))
             print("len of X_train_Prob_in_Y:", len(self.lable_Prob_in_Y))
-            # print("X_train_mean_var_in_Y:", self.X_train_mean_var_in_Y)
+            # print("X_train_mean_var_in_Y:", self.X_train_mean_cov_in_Y)
             # print("lable_Prob_in_Y:", self.lable_Prob_in_Y)
         else :
             pass
