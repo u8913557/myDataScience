@@ -5,6 +5,7 @@ from matplotlib.colors import ListedColormap
 # from sklearn.metrics import accuracy_score
 from sortedcontainers import SortedList
 import math
+from scipy.stats import multivariate_normal as mvn
 
 
 def plot_decision_regions(X, y, classifier, test_idx=None, resolution=0.02):
@@ -392,4 +393,57 @@ class myKNN(ml_model):
                     max_votes = count
                     max_votes_class = v
             Y_pred[i] = max_votes_class
+        return Y_pred
+
+
+class myNaiveBayes(ml_model):
+
+    def __init__(self, ):
+        pass
+
+    """
+    Parameters
+    ------------
+    X_train : array, float
+        Dataset for traninig
+    Y : array, float
+        "True" Y
+    """
+    def fit(self, X_train, Y, smoothing=1e-2):
+        self.X_train = X_train
+        self.Y = Y
+        # print("self.Y:", self.Y)
+        # print("self.X_train:", self.X_train)
+        N, D = X_train.shape
+        print("X_train has {0} samples with {1} features".format(
+            N, D))
+
+        self.X_train_mean_var_in_Y = {}
+        self.X_train_Prob_in_Y = {}
+        labels = set(Y)
+        self.lable_numbers = len(labels)
+
+        for c in labels:
+            such_X_train = X_train[Y == c]
+            self.X_train_mean_var_in_Y[c] = {
+                "mean": such_X_train.mean(axis=0), 
+                'cov': np.cov(such_X_train.T) + np.eye(D)*smoothing
+            }
+            self.lable_Prob_in_Y[c] = float(len(Y[Y == c])) / len(Y)
+
+        print("len of X_train_mean_var_in_Y:", len(self.X_train_mean_var_in_Y))
+        print("len of X_train_Prob_in_Y:", len(self.X_train_Prob_in_Y))
+        # print("X_train_mean_var_in_Y:", self.X_train_mean_var_in_Y)
+        # print("X_train_Prob_in_Y:", self.X_train_Prob_in_Y)
+
+    def predict(self, X_test):
+        N = X_test.shape[0]
+        print("shape of X_test:", X_test.shape)
+        Y_pred_P = np.zeros((N, self.lable_numbers))
+        for c, g in self.X_train_mean_var_in_Y.items():
+            mean, cov = g["mean"], g["cov"]
+            # print("c:{0}, g:{1}".format(c, g))
+            Y_pred_P[:, c] = mvn.logpdf(X_test, mean=mean, cov=cov) + np.log(self.lable_Prob_in_Y[c])
+        # print("Y_pred_P:{0}".format(Y_pred_P))
+        Y_pred = np.argmax(Y_pred_P, axis=1)
         return Y_pred
