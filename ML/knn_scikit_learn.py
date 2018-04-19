@@ -161,7 +161,7 @@ if __name__ == '__main__':
     print('Accuracy: %.2f' % accuracy_score(Y_test, Y_hat))
     print('Accuracy: %.2f' % knn.score(X_test_std, Y_test))
 
-    title = "Learning Curves (Perceptron)"
+    title = "Learning Curves (KNN)"
     cv = ShuffleSplit(n_splits=100, test_size=0.2, random_state=0)
     estimator = knn
     plot_learning_curve(estimator, X, Y, title, cv=cv, n_jobs=4)
