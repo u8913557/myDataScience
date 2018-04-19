@@ -19,7 +19,9 @@ if __name__ == '__main__':
     # print("X:", X)
     # print("Y:", Y)
 
-    X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.3, random_state=1, stratify=Y)
+    X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.3,
+                                                        random_state=1,
+                                                        stratify=Y)
 
     sc = StandardScaler()
     sc.fit(X)
@@ -29,7 +31,8 @@ if __name__ == '__main__':
     ppn = Perceptron(max_iter=30, eta0=0.01, verbose=False)
     ppn.fit(X_train_std, Y_train)
     Y_hat = ppn.predict(X_test_std)
-    print('Good classified samples: %d' % (accuracy_score(Y_test, Y_hat, normalize=False)))
+    print('Good classified samples: %d' % (accuracy_score(Y_test, Y_hat,
+                                                          normalize=False)))
     print('Misclassified samples: %d' % (Y_test != Y_hat).sum())
     print('Accuracy: %.2f' % accuracy_score(Y_test, Y_hat))
     print('Accuracy: %.2f' % ppn.score(X_test_std, Y_test))
@@ -61,7 +64,9 @@ if __name__ == '__main__':
     # print("Y:", Y)
     # print("Class lables:", np.unique(Y))
 
-    X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.3, random_state=1, stratify=Y)
+    X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.3,
+                                                        random_state=1,
+                                                        stratify=Y)
 
     sc = StandardScaler()
     sc.fit(X)
@@ -71,7 +76,8 @@ if __name__ == '__main__':
     ppn = Perceptron(max_iter=30, eta0=0.01, verbose=False)
     ppn.fit(X_train_std, Y_train)
     Y_hat = ppn.predict(X_test_std)
-    print('Good classified samples: %d' % (accuracy_score(Y_test, Y_hat, normalize=False)))
+    print('Good classified samples: %d' % (accuracy_score(Y_test, Y_hat,
+                                                          normalize=False)))
     print('Misclassified samples: %d' % (Y_test != Y_hat).sum())
     print('Accuracy: %.2f' % accuracy_score(Y_test, Y_hat))
     print('Accuracy: %.2f' % ppn.score(X_test_std, Y_test))
@@ -94,7 +100,8 @@ if __name__ == '__main__':
     ppn = SGDClassifier(loss='perceptron', max_iter=1000)
     ppn.fit(X_train_std, Y_train)
     Y_hat = ppn.predict(X_test_std)
-    print('Good classified samples: %d' % (accuracy_score(Y_test, Y_hat, normalize=False)))
+    print('Good classified samples: %d' % (accuracy_score(Y_test, Y_hat,
+                                                          normalize=False)))
     print('Misclassified samples: %d' % (Y_test != Y_hat).sum())
     print('Accuracy: %.2f' % accuracy_score(Y_test, Y_hat))
     print('Accuracy: %.2f' % ppn.score(X_test_std, Y_test))
@@ -125,7 +132,9 @@ if __name__ == '__main__':
     # print("Y:", Y)
     # print("Class lables:", np.unique(Y))
 
-    X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.3, random_state=1, stratify=Y)
+    X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.3,
+                                                        random_state=1,
+                                                        stratify=Y)
 
     sc = StandardScaler()
     sc.fit(X)
@@ -135,7 +144,8 @@ if __name__ == '__main__':
     ppn = Perceptron(max_iter=30, eta0=0.01, verbose=False)
     ppn.fit(X_train_std, Y_train)
     Y_hat = ppn.predict(X_test_std)
-    print('Good classified samples: %d' % (accuracy_score(Y_test, Y_hat, normalize=False)))
+    print('Good classified samples: %d' % (accuracy_score(Y_test, Y_hat,
+                                                          normalize=False)))
     print('Misclassified samples: %d' % (Y_test != Y_hat).sum())
     print('Accuracy: %.2f' % accuracy_score(Y_test, Y_hat))
     print('Accuracy: %.2f' % ppn.score(X_test_std, Y_test))
