@@ -1,10 +1,17 @@
 import ml_model
-from myDataset import get_donut
-from myDataset import get_Iris
-from myDataset import get_Wine
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
+from myDataset import get_donut
+from myDataset import get_Iris
+from myDataset import get_Wine
+
+import os
+import sys
+cur_path = os.path.dirname(__file__)
+rel_path = "..\\"
+abs_file_path = os.path.join(cur_path, rel_path)
+sys.path.insert(0, abs_file_path)
 
 
 if __name__ == '__main__':

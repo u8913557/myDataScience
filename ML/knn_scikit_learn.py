@@ -5,9 +5,16 @@ from sklearn.model_selection import ShuffleSplit
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
-from ml_model import plot_decision_regions
 import matplotlib.pyplot as plt
 from scikitplot.estimators import plot_learning_curve
+
+import os
+import sys
+cur_path = os.path.dirname(__file__)
+rel_path = "..\\"
+abs_file_path = os.path.join(cur_path, rel_path)
+sys.path.insert(0, abs_file_path)
+from myUtility import plot_decision_regions
 
 
 if __name__ == '__main__':

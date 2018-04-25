@@ -1,6 +1,6 @@
-
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 import os
 
 
@@ -84,7 +84,7 @@ def get_Iris(multi=False):
     """
     # Get Data
     cur_path = os.path.dirname(__file__)
-    rel_path = "..\\Dataset\\iris.data"
+    rel_path = ".\\Dataset\\iris.data"
     abs_file_path = os.path.join(cur_path, rel_path)
 
     iris_df = pd.read_csv(abs_file_path, header=None)
@@ -142,7 +142,7 @@ def get_Iris(multi=False):
 
 def get_Wine(multi=False):
     cur_path = os.path.dirname(__file__)
-    rel_path = "..\\Dataset\\wine.data"
+    rel_path = ".\\Dataset\\wine.data"
     abs_file_path = os.path.join(cur_path, rel_path)
 
     df_wine = pd.read_csv(abs_file_path, header=None)
@@ -203,7 +203,7 @@ def get_Wine(multi=False):
 def get_MNIST(limit=None):
     print("Reading in and transforming data...")
     cur_path = os.path.dirname(__file__)
-    rel_path = "..\\Dataset\\MNIST.csv"
+    rel_path = ".\\Dataset\\MNIST.csv"
     abs_file_path = os.path.join(cur_path, rel_path)
     df = pd.read_csv(abs_file_path, header=0)
     # print(df.head(3))
@@ -215,3 +215,17 @@ def get_MNIST(limit=None):
     if limit is not None:
         X, Y = X[:limit], Y[:limit]
     return X, Y
+
+
+def get_Stock(limit=None):
+    print("Reading in and transforming data...")
+    cur_path = os.path.dirname(__file__)
+    rel_path = ".\\Dataset\\taetfp.csv"
+    abs_file_path = os.path.join(cur_path, rel_path)
+    df = pd.read_csv(abs_file_path, header=None)
+    print(df.head(3))
+
+    rel_path = ".\\Dataset\\tasharep.csv"
+    abs_file_path = os.path.join(cur_path, rel_path)
+    df = pd.read_csv(abs_file_path, header=None)
+    print(df.head(3))
