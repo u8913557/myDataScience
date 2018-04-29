@@ -1,10 +1,6 @@
 import ml_model
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
-from myDataset import get_donut
-from myDataset import get_Iris
-from myDataset import get_Wine
-from myDataset import get_MNIST
 
 import os
 import sys
@@ -12,7 +8,10 @@ cur_path = os.path.dirname(__file__)
 rel_path = "..\\"
 abs_file_path = os.path.join(cur_path, rel_path)
 sys.path.insert(0, abs_file_path)
-
+from myDataset import get_donut
+from myDataset import get_Iris
+from myDataset import get_Wine
+from myDataset import get_MNIST
 
 if __name__ == '__main__':
 
@@ -34,12 +33,12 @@ if __name__ == '__main__':
     plt.tight_layout()
     plt.show()
 
-    nb_test = ml_model.myBayes(naive=False, pdf='gaussian')
-    nb_test.fit(X, Y)
+    knn_test = ml_model.myKNN(K=3)
+    knn_test.fit(X, Y)
 
-    Y_hat = nb_test.predict(X)
-    nb_test.r2_evl(Y, Y_hat)
-    nb_test.score(Y, Y_hat)
+    Y_hat = knn_test.predict(X)
+    knn_test.r2_evl(Y, Y_hat)
+    knn_test.score(Y, Y_hat)
 
     plt.scatter(
         X[Y == 1, 0], X[Y == 1, 1], color='red',
@@ -61,7 +60,7 @@ if __name__ == '__main__':
     plt.tight_layout()
     plt.show()
 
-    del nb_test
+    del knn_test
 
     # Iris Dataset test
     print("Iris Dataset test:")
@@ -73,44 +72,44 @@ if __name__ == '__main__':
     # Prepare Data for training / testing
     X_train, X_test, y_train, y_test = train_test_split(
         X, Y, test_size=0.3, random_state=0)
-    nb_test = ml_model.myBayes(naive=False, pdf='gaussian')
-    nb_test.fit(X_train, y_train)
+    knn_test = ml_model.myKNN(K=4)
+    knn_test.fit(X_train, y_train)
 
-    Y_hat = nb_test.predict(X_test)
-    nb_test.r2_evl(y_test, Y_hat)
-    nb_test.score(y_test, Y_hat)
+    Y_hat = knn_test.predict(X_test)
+    knn_test.r2_evl(y_test, Y_hat)
+    knn_test.score(y_test, Y_hat)
 
-    del nb_test
+    del knn_test
 
     # Wine Dataset test
     print("Wine Dataset test:")
 
     X, Y, selected_features, selected_lables = get_Wine(multi=True)
     for i in range(len(selected_lables)):
-            Y[Y == selected_lables[i]] = i
+        Y[Y == selected_lables[i]] = i
 
     # Prepare Data for training / testing
     X_train, X_test, y_train, y_test = train_test_split(
-            X, Y, test_size=0.3, random_state=0)
-    nb_test = ml_model.myBayes()
-    nb_test.fit(X_train, y_train)
+        X, Y, test_size=0.3, random_state=0)
+    knn_test = ml_model.myKNN(K=3)
+    knn_test.fit(X_train, y_train)
 
-    Y_hat = nb_test.predict(X_test)
-    nb_test.r2_evl(y_test, Y_hat)
-    nb_test.score(y_test, Y_hat)
+    Y_hat = knn_test.predict(X_test)
+    knn_test.r2_evl(y_test, Y_hat)
+    knn_test.score(y_test, Y_hat)
 
-    del nb_test
+    del knn_test
 
     # MNIST Dataset
     print("MNIST Dataset:")
-    X, Y = get_MNIST(limit=20000)
+    X, Y = get_MNIST(limit=2000)
 
     X_train, X_test, y_train, y_test = train_test_split(
-            X, Y, test_size=0.3, random_state=0)
+        X, Y, test_size=0.3, random_state=0)
 
-    nb_test = ml_model.myBayes(naive=False, pdf='gaussian')
-    nb_test.fit(X_train, y_train)
-    Y_hat = nb_test.predict(X_test)
-    nb_test.r2_evl(y_test, Y_hat)
-    nb_test.score(y_test, Y_hat)
-    del nb_test
+    knn_test = ml_model.myKNN(K=3)
+    knn_test.fit(X_train, y_train)
+    Y_hat = knn_test.predict(X_test)
+    knn_test.r2_evl(y_test, Y_hat)
+    knn_test.score(y_test, Y_hat)
+    del knn_test
