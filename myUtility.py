@@ -3,6 +3,32 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 import numpy as np
 
+# Show Keras train history
+def show_train_history(history, valid_data=False):
+    # summarize history for accuracy
+    plt.plot(history.history['acc'])
+
+    if valid_data is True:
+        plt.plot(history.history['val_acc'])
+
+    plt.title('model accuracy')
+    plt.ylabel('accuracy')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'test'], loc='upper left')
+    plt.show()
+    # summarize history for loss
+    plt.plot(history.history['loss'])
+
+    if valid_data is True:
+        plt.plot(history.history['val_loss'])
+
+    plt.title('model loss')
+    plt.ylabel('loss')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'test'], loc='upper left')
+    plt.show()
+
+
 def plot_decision_regions(X, y, classifier, test_idx=None, resolution=0.02):
 
     # setup marker generator and color map
