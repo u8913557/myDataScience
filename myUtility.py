@@ -4,11 +4,11 @@ from matplotlib.colors import ListedColormap
 import numpy as np
 
 # Show Keras train history
-def show_train_history(history, valid_data=False):
+def show_train_history(history, valid_data_rate=0):
     # summarize history for accuracy
     plt.plot(history.history['acc'])
 
-    if valid_data is True:
+    if valid_data_rate != 0:
         plt.plot(history.history['val_acc'])
 
     plt.title('model accuracy')
@@ -19,7 +19,7 @@ def show_train_history(history, valid_data=False):
     # summarize history for loss
     plt.plot(history.history['loss'])
 
-    if valid_data is True:
+    if valid_data_rate != 0:
         plt.plot(history.history['val_loss'])
 
     plt.title('model loss')
