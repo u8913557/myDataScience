@@ -3,6 +3,32 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 import numpy as np
 
+def plot_images_labels_prediction(images, labels,
+                                  prediction, prediction_prob, label_dict, idx, num=10):    
+    fig = plt.gcf()
+    fig.set_size_inches(14, 18)
+    if num > 25: num = 25
+    for i in range(num):
+        ax = plt.subplot(5, 5, i+1)
+        ax.imshow(images[idx])        
+        title = 'Index ' + str(i) + ': ' + label_dict[labels[i]]
+        prob_text = ''
+        if len(prediction) > 0:
+            title += ' => ' + label_dict[prediction[i]]
+            for j in range(len(label_dict)):
+                prob_text += label_dict[j] + ' Prob.:%1.3f'%(prediction_prob[i][j]) + '\n'
+
+        prob_text += '\n'
+        ax.set_title(title, fontsize=10)
+        ax.text(0, 120, prob_text, ha='left', wrap=True)
+        ax.set_xticks([])
+        ax.set_yticks([])
+        idx+=1
+    #plt.tight_layout()
+    #plt.subplots_adjust(left=0.125, bottom=0.1, right=0.9, top=0.9, wspace=0.2, hspace=0.2)
+    plt.show()
+
+
 # Show Keras train history
 def show_train_history(history, valid_data_rate=0):
     # summarize history for accuracy
