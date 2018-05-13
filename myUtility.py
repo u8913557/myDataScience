@@ -1,10 +1,10 @@
 
 import matplotlib.pyplot as plt
-from matplotlib.colors import ListedColormap
 import numpy as np
 
 def plot_images_labels_prediction(images, labels,
-                                  prediction, prediction_prob, label_dict, idx, num=10):    
+                                  prediction, prediction_prob, 
+                                  label_dict, idx, num=10):    
     fig = plt.gcf()
     fig.set_size_inches(14, 18)
     if num > 25: num = 25
@@ -56,6 +56,8 @@ def show_train_history(history, valid_data_rate=0):
 
 
 def plot_decision_regions(X, y, classifier, test_idx=None, resolution=0.02):
+
+    from matplotlib.colors import ListedColormap
 
     # setup marker generator and color map
     markers = ('s', 'x', 'o', '^', 'v', '>', '<')
