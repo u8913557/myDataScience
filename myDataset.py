@@ -216,6 +216,27 @@ def get_MNIST(limit=None):
     return X, Y
 
 
+def get_Titanic(multi=False):
+    # Get Data
+    cur_path = os.path.dirname(__file__)
+    rel_path = ".\\Dataset\\titanic3.xls"
+    abs_file_path = os.path.join(cur_path, rel_path)
+
+    titanic_df = pd.read_excel(abs_file_path, header=0)
+    # print(titanic_df.head(3))
+    return titanic_df
+
+
+def get_IMDb(multi=False):
+    # Get Data
+    cur_path = os.path.dirname(__file__)
+    rel_path = ".\\Dataset\\IMDb.csv"
+    abs_file_path = os.path.join(cur_path, rel_path)
+
+    imdb_df = pd.read_csv(abs_file_path, header=0)
+    # print(imdb_df.head(3))
+    return imdb_df
+
 def get_Stock(limit=None):
     print("Reading in and transforming data...")
     cur_path = os.path.dirname(__file__)
