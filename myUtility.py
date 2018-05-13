@@ -2,6 +2,15 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+def text_preprocessor(text):
+    import re
+
+    text = re.sub('<[^>]*>', '', text)
+    emoticons = re.findall('(?::|;|=)(?:-)?(?:\)|\(|D|P)', text)
+    text = (re.sub('[\W]+', ' ', text.lower()) +
+            ' '.join(emoticons).replace('-', ''))
+    return text
+
 def plot_images_labels_prediction(images, labels,
                                   prediction, prediction_prob, 
                                   label_dict, idx, num=10):    
