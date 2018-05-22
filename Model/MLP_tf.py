@@ -156,4 +156,7 @@ if __name__ == '__main__':
         plt.xlabel('epoch')
         plt.legend()
         plt.show()
+
+        merged = tf.summary.merge_all()
+        train_writer = tf.summary.FileWriter('myDataScience//log//MLP', sess.graph)
     
