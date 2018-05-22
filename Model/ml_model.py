@@ -3,7 +3,6 @@ import numpy as np
 # from sklearn.metrics import accuracy_score
 from sortedcontainers import SortedList
 import math
-from scipy.stats import multivariate_normal as mvn
 import matplotlib.pyplot as plt
 
 
@@ -144,6 +143,7 @@ class myPerceptron(ml_model):
                 self.w_[0] += update
                 errors += int(error != 0.0)
             self.errors_.append(errors)
+            # print('errors:', errors)
 
         print("final w:\n", self.w_, "\nepochs:",
               (epoch+1), "/", self.num_epochs)
@@ -154,7 +154,7 @@ class myPerceptron(ml_model):
         plt.show()
 
     def predict(self, X_test, standardize=False):
-        print("shape of X_test:", X_test.shape)
+        # print("shape of X_test:", X_test.shape)
         if(standardize is True):
             for i in range(self.D):
                 X_test[:, i] = \
@@ -412,6 +412,9 @@ class myBayes(ml_model):
             pass
 
     def predict(self, X_test):
+
+        from scipy.stats import multivariate_normal as mvn
+        
         N = X_test.shape[0]
         print("shape of X_test:", X_test.shape)
         Y_pred_P = np.zeros((N, self.lable_numbers))
