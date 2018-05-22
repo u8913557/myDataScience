@@ -51,14 +51,14 @@ if __name__ == '__main__':
             y = tf.placeholder(tf.float32, [None, nodes_output])
 
             with tf.variable_scope("layer_h1") as scope:
-                output_h1 = layer(inputs=x, input_dim=nodes_input, 
-                                  output_dim=nodes_h1, acivation=activation_h)
+                output_h1 = layer(inputs=x, weight_shape=[nodes_input, nodes_h1], 
+                                  bias_shape=[nodes_h1], acivation=activation_h)
             with tf.variable_scope("layer_h2") as scope:
-                output_h2 = layer(inputs=output_h1, input_dim=nodes_h1, 
-                                  output_dim=nodes_h2, acivation=activation_h)
+                output_h2 = layer(inputs=output_h1, weight_shape=[nodes_h1, nodes_h2], 
+                                  bias_shape=[nodes_h2], acivation=activation_h)
             with tf.variable_scope("layer_output") as scope:
-                output = layer(inputs=output_h2, input_dim=nodes_h2, 
-                               output_dim=nodes_output, acivation=None)
+                output = layer(inputs=output_h2, weight_shape=[nodes_h2, nodes_output], 
+                               bias_shape=[nodes_output], acivation=None)
             
             return output, x, y
 

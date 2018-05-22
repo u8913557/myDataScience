@@ -63,9 +63,10 @@ if __name__ == '__main__':
         training_epochs = 30
         batch_size = 100
         nodes_input = 784
-        nodes_h3 = 1000
+        nodes_fc = 1024
         nodes_output = 10
         dropout_rate = 0.5
+        keep_prob = 1 - dropout_rate
         activation_h = tf.nn.relu
         # activation_output= tf.nn.softmax
 
@@ -87,50 +88,67 @@ if __name__ == '__main__':
             if highlevelAPI is True:
                 # Placeholders for X and y:
 
-                with tf.variable_scope("layer_h1") as scope:
-                    print("Build 1st layer:")
+                with tf.variable_scope("layer_conv1") as scope:
+                    print("Build 1st conv layer:")
                     # Convolutuion 
-                    output_h1 = tf.layers.conv2d(x_image,
+                    output_conv1 = tf.layers.conv2d(x_image,
                                                 kernel_size=(5, 5),
                                                 filters=32,
+                                                padding='VALID,
                                                 activation=activation_h)
                     # MaxPooling
-                    output_pool_h1 = tf.layers.max_pooling2d(output_h1,
+                    output_pool_conv1 = tf.layers.max_pooling2d(output_conv1,
                                                             pool_size=(2, 2),
                                                             strides=(2, 2))
-                with tf.variable_scope("layer_h2") as scope:
-                    print("Build 2nd layer:")
+                with tf.variable_scope("layer_conv2") as scope:
+                    print("Build 2nd conv layer:")
                     # Convolutuion
-                    output_h2 = tf.layers.conv2d(output_pool_h1, 
+                    output_conv2 = tf.layers.conv2d(output_pool_conv1, 
                                                 kernel_size=(5, 5),
                                                 filters=64,
+                                                padding='VALID',
                                                 activation=activation_h)
                     # MaxPooling
-                    output_pool_h2 = tf.layers.max_pooling2d(output_h2,
+                    output_pool_conv2 = tf.layers.max_pooling2d(output_conv2,
                                                             pool_size=(2, 2),
                                                             strides=(2, 2))
-                with tf.variable_scope("layer_h3") as scope:
+                with tf.variable_scope("layer_fc") as scope:
                     print("Build fc layer:")
-                    input_shape = output_pool_h2.get_shape().as_list()
-                    print("input_shape:", input_shape)
-                    n_input_units = np.prod(input_shape[1:])
-                    print("n_input_units:", n_input_units)
-                    output_flat_h3 = tf.reshape(output_pool_h2,
-                                        shape=[-1, n_input_units])
-                    output_h3 = tf.layers.dense(output_flat_h3, nodes_h3,
+                    input_shape = output_pool_conv2.get_shape().as_list()
+                    flat_units = np.prod(input_shape[1:])
+                    output_flat_fc = tf.reshape(output_pool_conv2,
+                                        shape=[-1, flat_units])
+                    output_fc = tf.layers.dense(output_flat_fc, nodes_fc,
                                                 activation=activation_h)
                     # Dropout
-                    output_drop_h3 = tf.layers.dropout(output_h3,
+                    output_drop_fc = tf.layers.dropout(output_fc,
                                             rate=dropout_rate,
                                             training=is_train)
                 with tf.variable_scope("layer_output") as scope:
                     print("Build output layer:")
-                    output = tf.layers.dense(output_drop_h3, nodes_output,
+                    output = tf.layers.dense(output_drop_fc, nodes_output,
                                         activation=None)
             else:
-                pass
+                with tf.variable_scope("layer_conv1"):
+                    output_conv1 = conv2d(x_image, [5, 5, 1, 32], [32],
+                                          padding_mode='VALID')
+                    output_pool_conv1 = max_pool(output_conv1, k=2)
 
-            
+                with tf.variable_scope("layer_conv2"):
+                    output_conv2 = conv2d(output_pool_conv1, [5, 5, 32, 64], [64],
+                                          padding_mode='VALID')
+                    output_pool_conv2 = max_pool(output_conv2)
+                
+                with tf.variable_scope("layer_fc"):
+                    input_shape = output_pool_conv2.get_shape().as_list()
+                    flat_units = np.prod(input_shape[1:])
+                    output_flat_fc = tf.reshape(output_pool_conv2, [-1, flat_units])
+                    output_fc = layer(output_flat_fc, [flat_units, nodes_fc], [nodes_fc])
+                    # apply dropout
+                    output_drop_fc = tf.nn.dropout(output_fc, keep_prob)
+                with tf.variable_scope("output"):
+                    output = layer(output_drop_fc, [nodes_fc, nodes_output], [nodes_output]) 
+                    
             return output, x, y, is_train
 
 
@@ -169,7 +187,7 @@ if __name__ == '__main__':
     g = tf.Graph()
     with g.as_default():        
 
-        output, x, y, is_train = inference()
+        output, x, y, is_train = inference(highlevelAPI=False)
 
         cost = loss(output, y)
 
