@@ -204,7 +204,7 @@ if __name__ == '__main__':
 
         eval_op = evaluate(output, y)
 
-        # saver = tf.train.Saver()
+        saver = tf.train.Saver()
 
         init_op = tf.global_variables_initializer()
 
@@ -255,6 +255,7 @@ if __name__ == '__main__':
         plt.legend()
         plt.show()
 
+        save_path = saver.save(sess, "myDataScience//Model//SaveModel//CNN//CNN_tf_model1")
         merged = tf.summary.merge_all()
         train_writer = tf.summary.FileWriter('myDataScience//log//CNN', sess.graph)
     

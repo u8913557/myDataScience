@@ -52,13 +52,13 @@ if __name__ == '__main__':
 
             with tf.variable_scope("layer_h1") as scope:
                 output_h1 = layer(inputs=x, weight_shape=[nodes_input, nodes_h1], 
-                                  bias_shape=[nodes_h1], acivation=activation_h)
+                                  bias_shape=[nodes_h1], activation=activation_h)
             with tf.variable_scope("layer_h2") as scope:
                 output_h2 = layer(inputs=output_h1, weight_shape=[nodes_h1, nodes_h2], 
-                                  bias_shape=[nodes_h2], acivation=activation_h)
+                                  bias_shape=[nodes_h2], activation=activation_h)
             with tf.variable_scope("layer_output") as scope:
                 output = layer(inputs=output_h2, weight_shape=[nodes_h2, nodes_output], 
-                               bias_shape=[nodes_output], acivation=None)
+                               bias_shape=[nodes_output], activation=None)
             
             return output, x, y
 
@@ -157,6 +157,7 @@ if __name__ == '__main__':
         plt.legend()
         plt.show()
 
+        save_path = saver.save(sess, "myDataScience//Model//SaveModel//MLP//MLP_tf_model1")
         merged = tf.summary.merge_all()
         train_writer = tf.summary.FileWriter('myDataScience//log//MLP', sess.graph)
     
