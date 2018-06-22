@@ -59,7 +59,7 @@ if __name__ == '__main__':
         activation_output= tf.nn.relu
 
         
-        def inference(isNB=False):
+        def inference():
             
             x = tf.placeholder(tf.float32, [None, nodes_input])
             y = tf.placeholder(tf.int32, [None, nodes_output])
@@ -190,7 +190,7 @@ if __name__ == '__main__':
         activation_h = tf.nn.relu
         activation_output= tf.nn.relu
 
-        def inference(isNB=False):            
+        def inference():            
             
             x = tf.placeholder(tf.float32, [None, 24, 24, 3])
             y = tf.placeholder(tf.int32, [None])
@@ -315,9 +315,9 @@ if __name__ == '__main__':
                                                                 batch_size=batch_size)
             
         if isNB:
-            output, x, y, keep_prob, is_train = inference(isNB=True)
+            output, x, y, keep_prob, is_train = inference()
         else:
-            output, x, y, keep_prob = inference(isNB=False)
+            output, x, y, keep_prob = inference()
 
         cost = loss(output, y)
 
