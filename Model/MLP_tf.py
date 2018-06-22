@@ -10,26 +10,30 @@ sys.path.insert(0, abs_file_path)
 from myTFUtility import *
 
 data_set = 'mnist'
+isNB = True
+
+
 
 if __name__ == '__main__':
 
     if data_set=='mnist':
         from tensorflow.examples.tutorials.mnist import input_data
 
-        dataset = input_data.read_data_sets("MNIST_data", one_hot=True)
-        print('Train images:', dataset.train.images.shape)
-        print('Train lables:', dataset.train.labels.shape)
-        print('validation images:', dataset.validation.images.shape)
-        print('validation lables:', dataset.validation.labels.shape)
-        print('Test images:', dataset.test.images.shape)
-        print('Test lables:', dataset.test.labels.shape)
+        with tf.device('/cpu:0'):
+            dataset = input_data.read_data_sets("MNIST_data", one_hot=True)
+            print('Train images:', dataset.train.images.shape)
+            print('Train lables:', dataset.train.labels.shape)
+            print('validation images:', dataset.validation.images.shape)
+            print('validation lables:', dataset.validation.labels.shape)
+            print('Test images:', dataset.test.images.shape)
+            print('Test lables:', dataset.test.labels.shape)
 
-        X_train = dataset.train.images
-        Y_train = dataset.train.labels
-        X_test = dataset.test.images
-        Y_test = dataset.test.labels
-        X_valid = dataset.validation.images
-        Y_valid = dataset.validation.labels
+            X_train = dataset.train.images
+            Y_train = dataset.train.labels
+            X_test = dataset.test.images
+            Y_test = dataset.test.labels
+            X_valid = dataset.validation.images
+            Y_valid = dataset.validation.labels
 
         # Parameters
         learning_rate = 0.001
@@ -50,17 +54,35 @@ if __name__ == '__main__':
             x = tf.placeholder(tf.float32, [None, nodes_input])
             y = tf.placeholder(tf.float32, [None, nodes_output])
 
-            with tf.variable_scope("layer_h1") as scope:
-                output_h1 = layer(inputs=x, weight_shape=[nodes_input, nodes_h1], 
-                                  bias_shape=[nodes_h1], activation=activation_h)
-            with tf.variable_scope("layer_h2") as scope:
-                output_h2 = layer(inputs=output_h1, weight_shape=[nodes_h1, nodes_h2], 
-                                  bias_shape=[nodes_h2], activation=activation_h)
-            with tf.variable_scope("layer_output") as scope:
-                output = layer(inputs=output_h2, weight_shape=[nodes_h2, nodes_output], 
-                               bias_shape=[nodes_output], activation=None)
+            if isNB:
+                is_train = tf.placeholder(tf.bool,
+                                    shape=(),
+                                    name='is_train')
+
+                with tf.variable_scope("layer_h1") as scope:
+                    output_h1 = layer_v2(inputs=x, weight_shape=[nodes_input, nodes_h1], 
+                                    bias_shape=[nodes_h1], phase_train=is_train, activation=activation_h)
+                with tf.variable_scope("layer_h2") as scope:
+                    output_h2 = layer_v2(inputs=output_h1, weight_shape=[nodes_h1, nodes_h2], 
+                                    bias_shape=[nodes_h2], phase_train=is_train, activation=activation_h)
+                with tf.variable_scope("layer_output") as scope:
+                    output = layer_v2(inputs=output_h2, weight_shape=[nodes_h2, nodes_output], 
+                                bias_shape=[nodes_output], phase_train=is_train, activation=None)
+
+                return output, x, y, is_train
+            else:
+
+                with tf.variable_scope("layer_h1") as scope:
+                    output_h1 = layer(inputs=x, weight_shape=[nodes_input, nodes_h1], 
+                                    bias_shape=[nodes_h1], activation=activation_h)
+                with tf.variable_scope("layer_h2") as scope:
+                    output_h2 = layer(inputs=output_h1, weight_shape=[nodes_h1, nodes_h2], 
+                                    bias_shape=[nodes_h2], activation=activation_h)
+                with tf.variable_scope("layer_output") as scope:
+                    output = layer(inputs=output_h2, weight_shape=[nodes_h2, nodes_output], 
+                                bias_shape=[nodes_output], activation=None)
             
-            return output, x, y
+                return output, x, y
 
         def loss(output, y):
             
@@ -96,7 +118,10 @@ if __name__ == '__main__':
     g = tf.Graph()
     with g.as_default():        
 
-        output, x, y = inference()
+        if isNB:
+            output, x, y, is_train = inference()
+        else:
+            output, x, y = inference()
 
         cost = loss(output, y)
 
@@ -110,8 +135,13 @@ if __name__ == '__main__':
 
         init_op = tf.global_variables_initializer()
 
-        sess = tf.Session()
+        sess = tf.Session()        
+
         sess.run(init_op)
+
+        save_path = saver.save(sess, cur_path + "\\SaveModel\\MLP\\tf\\MLP_tf_model")
+        merged = tf.summary.merge_all()
+        train_writer = tf.summary.FileWriter(cur_path + "\\log\\MLP", sess.graph)
     
         epoch_list = []
         loss_list = []
@@ -125,10 +155,17 @@ if __name__ == '__main__':
                                         shuffle=True)
             for i, (minibatch_x, minibatch_y) in enumerate(batch_gen):
                 # Fit training using batch data
-                sess.run(train_op, feed_dict={x: minibatch_x, y: minibatch_y})
+                if isNB:
+                    sess.run(train_op, feed_dict={x: minibatch_x, y: minibatch_y, is_train:True})
+                else:
+                    sess.run(train_op, feed_dict={x: minibatch_x, y: minibatch_y})
 
-            loss_, accuracy_ = sess.run([cost, eval_op], 
-                                    feed_dict={x: X_valid, y: Y_valid})
+            if isNB:
+                loss_, accuracy_ = sess.run([cost, eval_op], 
+                                        feed_dict={x: X_valid, y: Y_valid, is_train:False})
+            else:
+                loss_, accuracy_ = sess.run([cost, eval_op], 
+                                        feed_dict={x: X_valid, y: Y_valid})
             epoch_list.append(epoch)
             loss_list.append(loss_)
             accuracy_list.append(accuracy_)
@@ -139,7 +176,11 @@ if __name__ == '__main__':
                     "accuracy =", accuracy_)
 
         print("Optimization Finished!")
-        print("Test Accuracy:", sess.run(eval_op, feed_dict={x: X_test, y: Y_test}))
+
+        if isNB:
+            print("Test Accuracy:", sess.run(eval_op, feed_dict={x: X_test, y: Y_test, is_train:False}))
+        else:
+            print("Test Accuracy:", sess.run(eval_op, feed_dict={x: X_test, y: Y_test}))
 
         fig = plt.gcf()
         fig.set_size_inches(4, 2)
@@ -155,9 +196,5 @@ if __name__ == '__main__':
         plt.ylabel('accuracy')
         plt.xlabel('epoch')
         plt.legend()
-        plt.show()
-
-        save_path = saver.save(sess, "myDataScience//Model//SaveModel//MLP//MLP_tf_model1")
-        merged = tf.summary.merge_all()
-        train_writer = tf.summary.FileWriter('myDataScience//log//MLP', sess.graph)
+        plt.show()        
     
